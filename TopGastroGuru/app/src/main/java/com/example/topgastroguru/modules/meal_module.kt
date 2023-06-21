@@ -11,7 +11,7 @@ val mealModule = module {
 
 //    viewModel { MainViewModel(movieRepository = get()) }
 
-    single<MealRepository> { MealRepositoryImpl() }
+    single<MealRepository> { MealRepositoryImpl(localDataSource = get()) }
 
     single { get<MealDataBase>().getUserDao() }
 

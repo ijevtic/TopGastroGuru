@@ -1,10 +1,14 @@
 package com.example.topgastroguru.data.repositories
 
+import com.example.topgastroguru.data.models.entities.MealEntity
 import io.reactivex.Completable
-import io.reactivex.Observable
 
 interface MealRepository {
     // TODO
+    fun insertMeal(meal: MealEntity): Completable
+    fun deleteMealById(id:String)
+    fun deleteAndInsertMeal(id: String, meal: MealEntity): Completable
+
 //    fun fetchAll(): Observable<Resource<Unit>>
 //    fun getAll(): Observable<List<Movie>>
 //    fun getAllByName(name: String): Observable<List<Movie>>
