@@ -5,13 +5,14 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.topgastroguru.data.models.entities.MealEntity
 import com.example.topgastroguru.data.models.entities.UserEntity
+import com.example.topgastroguru.data.sources.local.converters.DateConverter
 
 @Database(
     entities = [UserEntity::class,
                 MealEntity::class],
     version = 1,
     exportSchema = false)
-@TypeConverters()
+@TypeConverters(DateConverter::class)
 abstract class MealDataBase : RoomDatabase() {
     abstract fun getUserDao(): UserDao
     // TODO figure out what does this do
