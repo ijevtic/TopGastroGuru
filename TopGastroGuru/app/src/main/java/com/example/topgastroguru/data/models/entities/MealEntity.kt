@@ -14,7 +14,7 @@ data class MealEntity(
     val video:String,
     // TODO sastojci i mere
     val category: String,
-    val date:Date,
+//    val date:Date,
 //  Type can be lunch, dinner...
     val type:String
 )

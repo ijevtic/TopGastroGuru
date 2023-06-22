@@ -15,7 +15,7 @@ class MealRepositoryImpl(
         return localDataSource.deleteById(id)
     }
 
-    override fun deleteAndInsertMeal(id: String, meal: MealEntity): Completable {
-        return localDataSource.deleteAndInsertMeal(id,meal)
+    override fun deleteAndInsertMeal(id: String, meal: MealEntity) {
+        localDataSource.deleteAndInsertMeal(id,meal)
     }
 }

@@ -10,12 +10,13 @@ abstract class MealDao {
     @Insert( onConflict = OnConflictStrategy.REPLACE )
     abstract fun insert(entity: MealEntity): Completable
 
+
     @Query("DELETE FROM meal WHERE id = :id")
     abstract fun deleteById(id: String)
 
     @Transaction
-    open fun deleteAndInsertMeal(id:String, meal:MealEntity): Completable {
+    open fun deleteAndInsertMeal(id:String, meal:MealEntity) {
         deleteById(id)
-        return insert(meal)
+        insert(meal)
     }
 }
