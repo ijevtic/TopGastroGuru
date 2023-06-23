@@ -1,20 +1,22 @@
 package com.example.topgastroguru.presentation.view.activities
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.Observer
 import com.example.topgastroguru.R
 import com.example.topgastroguru.databinding.ActivityLoginPageBinding
 import com.example.topgastroguru.presentation.contract.UserContract
+import com.example.topgastroguru.presentation.view.states.CheckCredentialsState
+import com.example.topgastroguru.presentation.view.states.UsersState
 import com.example.topgastroguru.presentation.view.viewmodels.LoginViewModel
 import com.example.topgastroguru.util.Constants
 import com.example.topgastroguru.util.Util
-import androidx.lifecycle.Observer
-import com.example.topgastroguru.presentation.view.states.UsersState
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 class ActivityLoginPage : AppCompatActivity() {
@@ -31,17 +33,18 @@ class ActivityLoginPage : AppCompatActivity() {
 
         installSplashScreen()
 
+        // check if the user is already logged in
+        val sharedPreferences = getSharedPreferences(packageName, Context.MODE_PRIVATE)
+
+        if (sharedPreferences.contains(Constants.IS_LOGGED_IN) && sharedPreferences.getBoolean(Constants.IS_LOGGED_IN, true)) {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        }
+
         binding = ActivityLoginPageBinding.inflate(layoutInflater)
 
         val view = binding.root
         setContentView(view)
-
-        val sharedPreferences = getSharedPreferences(packageName, Context.MODE_PRIVATE)
-
-        if (sharedPreferences.contains(Constants.IS_LOGGED_IN) && sharedPreferences.getBoolean(Constants.IS_LOGGED_IN, true)) {
-//            val intent = Intent(this, MainActivity::class.java)
-//            startActivity(intent)
-        }
 
         init()
     }
@@ -57,7 +60,7 @@ class ActivityLoginPage : AppCompatActivity() {
 //            fullName = "ivan ivan",
 //        )
 //        mainViewModel.addUser(userToAdd)
-        mainViewModel.getAllUsers()
+//        mainViewModel.getAllUsers()
     }
 
     private fun initUi() {
@@ -98,20 +101,14 @@ class ActivityLoginPage : AppCompatActivity() {
             if (errorMessage != "Invalid input:\n") {
                 Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
             } else {
-                //check db for user
 
-//                val sharedPreferences = getSharedPreferences(packageName, Context.MODE_PRIVATE)
-//                val editor = sharedPreferences.edit()
-//                editor.putBoolean(Constants.IS_LOGGED_IN, true)
-//                editor.apply()
-//                val intent = Intent(this, MainActivity::class.java)
-//                startActivity(intent)
+                //check db for user
+                mainViewModel.checkCredentials(emailText, passwordText)
             }
         }
     }
 
     private fun initObservers() {
-        Timber.e("aa timber")
         mainViewModel.addDone.observe(this, Observer {
             Timber.e("renderState: $it")
             Toast.makeText(this, "User added", Toast.LENGTH_SHORT).show()
@@ -123,14 +120,36 @@ class ActivityLoginPage : AppCompatActivity() {
                 is UsersState.Success -> {
                     Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
                     val users = it.users
+                    if (users.isEmpty()) {
+                        Toast.makeText(this, getString(R.string.invalid_credentials), Toast.LENGTH_SHORT).show()
+                    }
                     for (user in users) {
-                        Timber.e("user: $user")
                     }
                 }
                 is UsersState.Error -> {
                     Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
                 }
                 is UsersState.Loading -> {
+                    Toast.makeText(this, "Loading", Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
+
+        mainViewModel.checkCredentialsState.observe(this, Observer {
+            Timber.e("renderState: $it")
+            when (it) {
+                is CheckCredentialsState.Success -> {
+                    val sharedPreferences = getSharedPreferences(packageName, Context.MODE_PRIVATE)
+                    val editor = sharedPreferences.edit()
+                    editor.putBoolean(Constants.IS_LOGGED_IN, true)
+                    editor.apply()
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
+                }
+                is CheckCredentialsState.Error -> {
+                    Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
+                }
+                is CheckCredentialsState.Loading -> {
                     Toast.makeText(this, "Loading", Toast.LENGTH_SHORT).show()
                 }
             }
