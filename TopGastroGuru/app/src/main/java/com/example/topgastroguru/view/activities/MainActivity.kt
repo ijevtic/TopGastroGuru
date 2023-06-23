@@ -9,13 +9,13 @@ import com.example.topgastroguru.view.activities.fragments.MealDetailedFragment
 
 class MainActivity : AppCompatActivity() {
 //  true to skip the login for testing purpouse
-    private var isLoggedIn= true
+    private var isLoggedIn = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(org.koin.android.R.style.Theme_AppCompat)
 
-        installSplashScreen()
+
 
         setContentView(R.layout.activity_main)
         setContentView(R.layout.fragment_main)
