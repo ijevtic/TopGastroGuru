@@ -13,11 +13,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import timber.log.Timber
-import java.util.concurrent.TimeUnit
 
 class LoginViewModel(
     private val userRepository: UserRepository
@@ -74,6 +70,7 @@ class LoginViewModel(
     }
 
     override fun checkCredentials(email: String, password: String) {
+        //TODO moze sinhrono da se odradi
         val subscription = userRepository
             .getAllByEmail(email)
             .subscribeOn(Schedulers.io())

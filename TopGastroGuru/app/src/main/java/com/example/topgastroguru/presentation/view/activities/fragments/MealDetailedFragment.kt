@@ -35,9 +35,9 @@ class MealDetailedFragment: Fragment(R.layout.fragment_meal_detailed) {
     }
 
     private fun initUi() {
-        binding.save.setOnClickListener {
-            (activity as MainActivity?)?.addFragment(SaveMealFragment())
-        }
+//        binding.save.setOnClickListener {
+//            (activity as MainActivity?)?.addFragment(SaveMealFragment())
+//        }
     }
 
     private fun initObservers() {
