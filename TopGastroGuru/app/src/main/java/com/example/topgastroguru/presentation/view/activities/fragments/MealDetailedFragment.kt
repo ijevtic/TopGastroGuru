@@ -1,4 +1,4 @@
-package com.example.topgastroguru.view.activities.fragments
+package com.example.topgastroguru.presentation.view.activities.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.topgastroguru.R
 import com.example.topgastroguru.databinding.FragmentMealDetailedBinding
-import com.example.topgastroguru.databinding.FragmentSaveMealBinding
+import com.example.topgastroguru.presentation.view.activities.MainActivity
 
-class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
-    private var _binding: FragmentSaveMealBinding? = null
+class MealDetailedFragment: Fragment(R.layout.fragment_meal_detailed) {
+    private var _binding: FragmentMealDetailedBinding? = null
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
@@ -20,7 +20,7 @@ class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentSaveMealBinding.inflate(inflater, container, false)
+        _binding = FragmentMealDetailedBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -36,7 +36,7 @@ class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
 
     private fun initUi() {
         binding.save.setOnClickListener {
-
+            (activity as MainActivity?)?.addFragment(SaveMealFragment())
         }
     }
 

@@ -1,11 +1,10 @@
-package com.example.topgastroguru.view.activities
+package com.example.topgastroguru.presentation.view.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.Fragment
 import com.example.topgastroguru.R
-import com.example.topgastroguru.view.activities.fragments.MealDetailedFragment
+import com.example.topgastroguru.presentation.view.activities.fragments.MealDetailedFragment
 
 class MainActivity : AppCompatActivity() {
 //  true to skip the login for testing purpouse

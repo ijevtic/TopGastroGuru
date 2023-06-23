@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <application
+        android:name=".apllication.Application"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -13,7 +14,7 @@
         android:theme="@style/Theme.SplashScreen"
         tools:targetApi="33">
         <activity
-            android:name=".view.activities.ActivityLoginPage"
+            android:name=".presentation.view.activities.ActivityLoginPage"
             android:exported="true"
             android:label="@string/app_name">
             <intent-filter>
@@ -22,7 +23,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.activities.MainActivity"
+            android:name=".presentation.view.activities.MainActivity"
             android:exported="true" >
             <meta-data
                 android:name="android.app.lib_name"

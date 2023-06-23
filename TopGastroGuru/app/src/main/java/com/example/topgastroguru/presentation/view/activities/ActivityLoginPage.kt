@@ -1,19 +1,26 @@
-package com.example.topgastroguru.view.activities
+package com.example.topgastroguru.presentation.view.activities
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.topgastroguru.R
 import com.example.topgastroguru.databinding.ActivityLoginPageBinding
+import com.example.topgastroguru.presentation.contract.UserContract
+import com.example.topgastroguru.presentation.view.viewmodels.LoginViewModel
 import com.example.topgastroguru.util.Constants
 import com.example.topgastroguru.util.Util
+import androidx.lifecycle.Observer
+import com.example.topgastroguru.presentation.view.states.UsersState
+import timber.log.Timber
 
 class ActivityLoginPage : AppCompatActivity() {
 
+
+    private val mainViewModel: UserContract.ViewModel by viewModel<LoginViewModel>()
 
     private lateinit var binding: ActivityLoginPageBinding
 
@@ -41,6 +48,16 @@ class ActivityLoginPage : AppCompatActivity() {
 
     private fun init() {
         initUi()
+        initObservers()
+//        val userToAdd = User(
+//            id = "1",
+//            email = "ivan@ivan.com",
+//            username = "ivan",
+//            password = "ivan",
+//            fullName = "ivan ivan",
+//        )
+//        mainViewModel.addUser(userToAdd)
+        mainViewModel.getAllUsers()
     }
 
     private fun initUi() {
@@ -49,7 +66,7 @@ class ActivityLoginPage : AppCompatActivity() {
             val emailText : String = binding.email.text.toString()
             val usernameText : String = binding.username.text.toString()
             val passwordText : String = binding.password.text.toString()
-            var errorMessage : String = "Invalid input:\n";
+            var errorMessage : String = "Invalid input:\n"
 
             if (!Util.isValidEmail(emailText)) {
                 errorMessage += """
@@ -83,13 +100,40 @@ class ActivityLoginPage : AppCompatActivity() {
             } else {
                 //check db for user
 
-                val sharedPreferences = getSharedPreferences(packageName, Context.MODE_PRIVATE)
-                val editor = sharedPreferences.edit()
-                editor.putBoolean(Constants.IS_LOGGED_IN, true)
-                editor.apply()
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
+//                val sharedPreferences = getSharedPreferences(packageName, Context.MODE_PRIVATE)
+//                val editor = sharedPreferences.edit()
+//                editor.putBoolean(Constants.IS_LOGGED_IN, true)
+//                editor.apply()
+//                val intent = Intent(this, MainActivity::class.java)
+//                startActivity(intent)
             }
         }
+    }
+
+    private fun initObservers() {
+        Timber.e("aa timber")
+        mainViewModel.addDone.observe(this, Observer {
+            Timber.e("renderState: $it")
+            Toast.makeText(this, "User added", Toast.LENGTH_SHORT).show()
+        })
+
+        mainViewModel.usersState.observe(this, Observer {
+            Timber.e("renderState: $it")
+            when (it) {
+                is UsersState.Success -> {
+                    Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
+                    val users = it.users
+                    for (user in users) {
+                        Timber.e("user: $user")
+                    }
+                }
+                is UsersState.Error -> {
+                    Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
+                }
+                is UsersState.Loading -> {
+                    Toast.makeText(this, "Loading", Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
     }
 }

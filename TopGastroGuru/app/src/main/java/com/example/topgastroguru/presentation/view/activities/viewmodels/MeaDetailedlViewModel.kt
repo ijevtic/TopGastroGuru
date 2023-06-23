@@ -1,4 +1,4 @@
-package com.example.topgastroguru.view.activities.viewmodels
+package com.example.topgastroguru.presentation.view.activities.viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
