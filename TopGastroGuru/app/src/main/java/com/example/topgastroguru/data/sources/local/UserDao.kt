@@ -33,4 +33,7 @@ abstract class UserDao {
     @Query("SELECT * FROM users WHERE username LIKE :username || '%'")
     abstract fun getByUsername(username: String): Observable<List<UserEntity>>
 
+    @Query("SELECT * FROM users WHERE email LIKE :email || '%'")
+    abstract fun getByEmail(email: String): Observable<List<UserEntity>>
+
 }
