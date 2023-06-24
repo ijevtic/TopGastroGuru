@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="15dp">
+    android:padding="15dp"
+    android:background="@color/black">
 
     <TextView
         android:id="@+id/name"
@@ -54,7 +55,7 @@
         android:id="@+id/save"
         android:layout_width="203dp"
         android:layout_height="56dp"
-        android:text="SAVE"
+        android:text="@string/save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -70,7 +71,10 @@
         android:id="@+id/vremeTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Planirano vreme pripreme:"
+        android:text="Select Date:"
+        android:textSize="15sp"
+        android:textColor="@color/white"
+        android:layout_marginTop="30dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/link" />
 
@@ -78,18 +82,24 @@
         android:id="@+id/datePicker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="datePicker"
+        android:text="JAN 01 2020"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        style="?android:spinnerStyle"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/vremeTV" />
+        app:layout_constraintTop_toBottomOf="@+id/vremeTV"
+        android:layout_marginTop="10dp"/>
 
     <EditText
         android:id="@+id/type"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="158dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="textPersonName"
         android:text="dorucak"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.575"
         app:layout_constraintStart_toEndOf="@+id/datePicker"
         app:layout_constraintTop_toBottomOf="@+id/vremeTV" />
 
@@ -105,8 +115,7 @@
         android:id="@+id/quit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:text="odustani"
+        android:text="@string/quit"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/save"
         app:layout_constraintStart_toStartOf="parent" />

@@ -11,6 +11,9 @@ abstract class MealDao {
     abstract fun insert(entity: MealEntity): Completable
 
 
+    @Query("SELECT * FROM meal WHERE id = :id")
+    abstract fun getMealById(id: String): Observable<MealEntity>
+
     @Query("DELETE FROM meal WHERE id = :id")
     abstract fun deleteById(id: String)
 

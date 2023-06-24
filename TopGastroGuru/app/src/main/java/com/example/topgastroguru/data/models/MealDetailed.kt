@@ -1,15 +1,15 @@
 package com.example.topgastroguru.data.models
 
 class MealDetailed(
-    val id:String = "Not avilable",
-    val name: String = "Not avilable",
-    val category: String = "Not avilable",
-    val area: String = "Not avilable",
-    val instructions: String = "Not avilable",
-    val mealThumb: String = "Not avilable",
-    val tags: String = "Not avilable",
-    val link: String = "Not avilable",
-    val ingredients :Map<String,String>
+    val id:String,
+    val name: String,
+    val category: String,
+    val area: String,
+    val instructions: String,
+    val mealThumb: String,
+    val tags: String,
+    val link: String,
+    val ingredients :Map<String,String>? = null
 ){
     private val calValue= "Not avilable"
 

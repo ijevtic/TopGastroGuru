@@ -10,7 +10,7 @@ import com.example.topgastroguru.data.sources.local.converters.DateConverter
 @Database(
     entities = [UserEntity::class,
                 MealEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = false)
 @TypeConverters(DateConverter::class)
 abstract class MealDataBase : RoomDatabase() {

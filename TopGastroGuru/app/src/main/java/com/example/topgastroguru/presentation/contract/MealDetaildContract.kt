@@ -13,5 +13,6 @@ interface MealDetaildContract {
         val meal: LiveData<MealDetailed>
 
         fun fetchMealById(id:String)
+        fun getMealById(id:String)
     }
 }

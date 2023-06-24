@@ -4,19 +4,15 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import com.example.topgastroguru.R
-import com.example.topgastroguru.data.repositories.MealRepositoryImpl
-import com.example.topgastroguru.data.sources.local.MealDao
-import com.example.topgastroguru.data.sources.remote.MealService
 import com.example.topgastroguru.databinding.ActivityMainBinding
 import com.example.topgastroguru.presentation.contract.MealDetaildContract
 import com.example.topgastroguru.presentation.view.activities.fragments.*
-import com.example.topgastroguru.presentation.view.viewmodels.MealDetailedlViewModel
+import com.example.topgastroguru.presentation.view.viewmodels.MealDetailedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
-    private val mealDetailedVM: MealDetaildContract.ViewModel by viewModel<MealDetailedlViewModel>()
+    private val mealDetailedVM: MealDetaildContract.ViewModel by viewModel<MealDetailedViewModel>()
 
     private lateinit var binding: ActivityMainBinding
 

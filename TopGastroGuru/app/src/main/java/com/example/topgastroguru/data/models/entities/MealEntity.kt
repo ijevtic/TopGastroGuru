@@ -11,7 +11,7 @@ data class MealEntity(
     val name: String,
     val img:String,
     val instructions:String,
-    val video:String,
+    val link:String,
     // TODO sastojci i mere
 //  Category can be chicken, beef, desert...
     val category: String,

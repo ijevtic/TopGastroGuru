@@ -9,13 +9,12 @@ import android.widget.Button
 import com.example.topgastroguru.R
 import com.example.topgastroguru.databinding.FragmentProfileBinding
 import com.example.topgastroguru.presentation.contract.MealDetaildContract
-import com.example.topgastroguru.presentation.view.viewmodels.MealDetailedlViewModel
+import com.example.topgastroguru.presentation.view.viewmodels.MealDetailedViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 class ProfileFragment : Fragment(R.layout.fragment_profile) {
-    private val mealDetailedVM: MealDetaildContract.ViewModel by activityViewModel<MealDetailedlViewModel>()
+    private val mealDetailedVM: MealDetaildContract.ViewModel by activityViewModel<MealDetailedViewModel>()
 
     private var _binding: FragmentProfileBinding? = null
 

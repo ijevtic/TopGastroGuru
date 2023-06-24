@@ -20,7 +20,7 @@ import androidx.lifecycle.Observer
 import com.example.topgastroguru.R
 import com.example.topgastroguru.databinding.FragmentMealDetailedBinding
 import com.example.topgastroguru.presentation.view.activities.MainActivity
-import com.example.topgastroguru.presentation.view.viewmodels.MealDetailedlViewModel
+import com.example.topgastroguru.presentation.view.viewmodels.MealDetailedViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import timber.log.Timber
 import java.io.InputStream
@@ -29,7 +29,7 @@ import java.net.URL
 
 class MealDetailedFragment: Fragment(R.layout.fragment_meal_detailed) {
 
-    private val mealDetailedVM: MealDetailedlViewModel by activityViewModel<MealDetailedlViewModel>()
+    private val mealDetailedVM: MealDetailedViewModel by activityViewModel<MealDetailedViewModel>()
 
     private var _binding: FragmentMealDetailedBinding? = null
     private val binding get() = _binding!!
@@ -87,7 +87,6 @@ class MealDetailedFragment: Fragment(R.layout.fragment_meal_detailed) {
             tagsTV.setText(meal.tags)
             linkTV.setText(meal.link)
             DownloadImageFromInternet(photoIV).execute(meal.mealThumb)
-//            photoIV.setImageDrawable(LoadImageFromWebOperations(meal.mealThumb))
         }
     }
 
@@ -116,15 +115,6 @@ class MealDetailedFragment: Fragment(R.layout.fragment_meal_detailed) {
         }
     }
 
-    fun LoadImageFromWebOperations(url: String?): Drawable? {
-        return try {
-            val `is` = URL(url).content as InputStream
-            Drawable.createFromStream(`is`, "src name")
-        } catch (e: Exception) {
-            null
-        }
-    }
-
     private fun initObservers() {
         mealDetailedVM.meal.observe(viewLifecycleOwner, Observer {
             Timber.e("Meal: $it")
@@ -137,15 +127,6 @@ class MealDetailedFragment: Fragment(R.layout.fragment_meal_detailed) {
             photoIV.setImageURI(it.mealThumb.toUri())
         })
     }
-
-//    private fun renderState(state: AddMovieState) {
-//        when(state) {
-//            is AddMovieState.Success -> Toast.makeText(context, "Movie added", Toast.LENGTH_SHORT)
-//                .show()
-//            is AddMovieState.Error -> Toast.makeText(context, "Error happened", Toast.LENGTH_SHORT)
-//                .show()
-//        }
-//    }
 
     override fun onDestroyView() {
         super.onDestroyView()

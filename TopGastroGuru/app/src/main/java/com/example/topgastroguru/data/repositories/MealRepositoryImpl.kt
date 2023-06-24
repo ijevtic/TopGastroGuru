@@ -19,6 +19,10 @@ class MealRepositoryImpl(
         return remoteDataSource.getMealById(id)
     }
 
+    override fun getMealById(id: String): Observable<MealEntity> {
+        return localDataSource.getMealById(id)
+    }
+
     override fun insertMeal(meal: MealEntity): Completable {
         return localDataSource.insert(meal)
     }
