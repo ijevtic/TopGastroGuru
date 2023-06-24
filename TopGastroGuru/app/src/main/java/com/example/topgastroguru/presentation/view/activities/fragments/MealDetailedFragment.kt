@@ -1,21 +1,47 @@
 package com.example.topgastroguru.presentation.view.activities.fragments
 
+import android.annotation.SuppressLint
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.Drawable
+import android.os.AsyncTask
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import com.example.topgastroguru.R
 import com.example.topgastroguru.databinding.FragmentMealDetailedBinding
+import com.example.topgastroguru.presentation.view.activities.MainActivity
 import com.example.topgastroguru.presentation.view.viewmodels.MealDetailedlViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import timber.log.Timber
+import java.io.InputStream
+import java.net.URL
+
 
 class MealDetailedFragment: Fragment(R.layout.fragment_meal_detailed) {
 
-    private val mealDetailedVM: MealDetailedlViewModel by viewModel<MealDetailedlViewModel>()
+    private val mealDetailedVM: MealDetailedlViewModel by activityViewModel<MealDetailedlViewModel>()
 
     private var _binding: FragmentMealDetailedBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var nameTV: TextView
+    private lateinit var areaTV: TextView
+    private lateinit var instructionsTV: TextView
+    private lateinit var photoIV: ImageView
+    private lateinit var categoryTV: TextView
+    private lateinit var tagsTV: TextView
+    private lateinit var saveBT: Button
+    private lateinit var linkTV: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,16 +64,78 @@ class MealDetailedFragment: Fragment(R.layout.fragment_meal_detailed) {
     }
 
     private fun initView() {
+        nameTV = binding.name
+        areaTV = binding.area
+        instructionsTV = binding.instructions
+        photoIV = binding.photo
+        categoryTV = binding.category
+        tagsTV = binding.tags
+        saveBT = binding.save
+        linkTV = binding.link
 
         binding.save.setOnClickListener {
-//            (activity as MainActivity?)?.addFragment(SaveMealFragment())
+            (activity as MainActivity?)?.addFragment(SaveMealFragment())
+        }
+
+        var meal = mealDetailedVM.getMealDetailed()
+        Timber.e("MealDetailedFragment got notified") // null
+        if (meal != null) {
+            nameTV.setText(meal.name)
+            areaTV.setText(meal.area)
+            instructionsTV.setText(meal.instructions)
+            categoryTV.setText(meal.category)
+            tagsTV.setText(meal.tags)
+            linkTV.setText(meal.link)
+            DownloadImageFromInternet(photoIV).execute(meal.mealThumb)
+//            photoIV.setImageDrawable(LoadImageFromWebOperations(meal.mealThumb))
+        }
+    }
+
+
+    @SuppressLint("StaticFieldLeak")
+    @Suppress("DEPRECATION")
+    private inner class DownloadImageFromInternet(var imageView: ImageView) : AsyncTask<String, Void, Bitmap?>() {
+        init {
+            Toast.makeText(requireContext().applicationContext, "Please wait, it may take a few minute...",     Toast.LENGTH_SHORT).show()
+        }
+        override fun doInBackground(vararg urls: String): Bitmap? {
+            val imageURL = urls[0]
+            var image: Bitmap? = null
+            try {
+                val `in` = java.net.URL(imageURL).openStream()
+                image = BitmapFactory.decodeStream(`in`)
+            }
+            catch (e: Exception) {
+                Log.e("Error Message", e.message.toString())
+                e.printStackTrace()
+            }
+            return image
+        }
+        override fun onPostExecute(result: Bitmap?) {
+            imageView.setImageBitmap(result)
+        }
+    }
+
+    fun LoadImageFromWebOperations(url: String?): Drawable? {
+        return try {
+            val `is` = URL(url).content as InputStream
+            Drawable.createFromStream(`is`, "src name")
+        } catch (e: Exception) {
+            null
         }
     }
 
     private fun initObservers() {
-//        mainViewModel.addDone.observe(viewLifecycleOwner, Observer {
-//            renderState(it)
-//        })
+        mealDetailedVM.meal.observe(viewLifecycleOwner, Observer {
+            Timber.e("Meal: $it")
+            nameTV.setText(it.name)
+            areaTV.setText(it.area)
+            instructionsTV.setText(it.instructions)
+            categoryTV.setText(it.category)
+            tagsTV.setText(it.tags)
+            linkTV.setText(it.link)
+            photoIV.setImageURI(it.mealThumb.toUri())
+        })
     }
 
 //    private fun renderState(state: AddMovieState) {

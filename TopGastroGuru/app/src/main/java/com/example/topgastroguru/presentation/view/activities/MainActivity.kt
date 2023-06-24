@@ -28,21 +28,18 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         init()
-
-        // Test
-        mealDetailedVM.fetchMealById("52772")
     }
 
     private fun init () {
         // Set the initial fragment
         replaceFragment(MainFragment())
         initObservers()
+//        mealDetailedVM.fetchMealById("52772")
     }
 
     private fun initObservers(){
-        //TODO: Add observers
         mealDetailedVM.meal.observe(this, Observer {
-            Timber.e("Meal: $it")
+            Timber.e("MainActivity notified of meal change")
             addFragment(MealDetailedFragment())
         })
     }

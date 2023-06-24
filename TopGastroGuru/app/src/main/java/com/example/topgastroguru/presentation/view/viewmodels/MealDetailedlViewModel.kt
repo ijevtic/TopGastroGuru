@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.topgastroguru.data.models.MealDetailed
 import com.example.topgastroguru.data.repositories.MealRepository
+import com.example.topgastroguru.data.sources.remote.converters.MealDetailedConverter
 import com.example.topgastroguru.presentation.contract.MealDetaildContract
 import com.example.topgastroguru.presentation.view.states.CheckCredentialsState
 import io.reactivex.Scheduler
@@ -27,17 +28,28 @@ class MealDetailedlViewModel(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
-                    Timber.e("Meal fetched " + it.meals[0])
+//                    Timber.e("Meal fetched " + it.meals[0])
+                    meal.value = MealDetailedConverter.convertToMealDetailed(it.meals[0])
+                    meal.postValue(meal.value)
+//                    Timber.e("1MealDetailed fetched " + meal.value)
+//                    setMealDetailed(meal.value!!)
                 },
                 {
                     Timber.e(it)
                 }
             )
         subscriptions.add(subscription)
-
-//        Timber.e(subscription.get)
-
     }
+    fun getMealDetailed(): MealDetailed? {
+        Timber.e("getMealDetailed " + meal.value)
+        return meal.value
+    }
+
+    fun setMealDetailed(mealDetailed: MealDetailed) {
+        meal.value = mealDetailed
+        Timber.e("MealDetailed set " + meal.value)
+    }
+
 //    override fun fetchAll(): Observable<Resource<Unit>> {
 //        return remoteDataSource
 //            .getAll()
@@ -56,4 +68,9 @@ class MealDetailedlViewModel(
 //                Resource.Success(Unit)
 //            }
 //    }
+    override fun onCleared() {
+        super.onCleared()
+        subscriptions.dispose()
+    }
+
 }

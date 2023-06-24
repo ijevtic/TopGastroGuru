@@ -8,8 +8,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.example.topgastroguru.R
 import com.example.topgastroguru.databinding.FragmentMainBinding
+import com.example.topgastroguru.presentation.contract.MealDetaildContract
+import com.example.topgastroguru.presentation.view.viewmodels.MealDetailedlViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainFragment : Fragment(R.layout.fragment_main) {
+    // Test - delete later
+    private val mealDetailedVM: MealDetaildContract.ViewModel by viewModel<MealDetailedlViewModel>()
 
     private var _binding: FragmentMainBinding? = null
 
@@ -36,6 +41,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 // Add more cases for additional fragments
                 else -> AllMealsFragment() // Default fragment
             }
+
             replaceFragment(fragment)
             true
         }

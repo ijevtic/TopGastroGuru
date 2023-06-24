@@ -1,15 +1,15 @@
 package com.example.topgastroguru.data.models
 
 class MealDetailed(
-    private val id:String = "Not avilable",
-    private val name: String = "Not avilable",
-    private val category: String = "Not avilable",
-    private val area: String = "Not avilable",
-    private val instructions: String = "Not avilable",
-    private val mealThumb: String = "Not avilable",
-    private val tags: String = "Not avilable",
-    private val link: String = "Not avilable",
-    private val ingredients :Map<String,String>
+    val id:String = "Not avilable",
+    val name: String = "Not avilable",
+    val category: String = "Not avilable",
+    val area: String = "Not avilable",
+    val instructions: String = "Not avilable",
+    val mealThumb: String = "Not avilable",
+    val tags: String = "Not avilable",
+    val link: String = "Not avilable",
+    val ingredients :Map<String,String>
 ){
     private val calValue= "Not avilable"
 
@@ -17,6 +17,11 @@ class MealDetailed(
         //TODO calculate amount of calories and add this method in init block
         //or setter of ingredients
     }
+
+    override fun toString(): String {
+        return "MealDetailed(id='$id', name='$name', category='$category', area='$area', instructions='$instructions', mealThumb='$mealThumb', tags='$tags', link='$link', ingredients=$ingredients)"
+    }
+
 }
 //idMeal": "52772",
 //"strMeal": "Teriyaki Chicken Casserole",

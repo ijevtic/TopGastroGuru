@@ -15,6 +15,11 @@ val mealModule = module {
 
     viewModel { LoginViewModel(userRepository = get()) }
 
+//    val weatherAppModule = module {
+//
+//        // WeatherViewModel declaration for Weather View components
+//        viewModel { WeatherViewModel(get(), get()) }
+//    }
     viewModel { MealDetailedlViewModel(mealRepository = get()) }
 
     single<MealRepository> { MealRepositoryImpl(localDataSource = get(), remoteDataSource = get ()) }
