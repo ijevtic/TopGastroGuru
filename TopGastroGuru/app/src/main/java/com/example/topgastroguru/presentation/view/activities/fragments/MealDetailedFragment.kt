@@ -7,12 +7,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.topgastroguru.R
 import com.example.topgastroguru.databinding.FragmentMealDetailedBinding
-import com.example.topgastroguru.presentation.view.activities.MainActivity
+import com.example.topgastroguru.presentation.view.viewmodels.MealDetailedlViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MealDetailedFragment: Fragment(R.layout.fragment_meal_detailed) {
+
+    private val mealDetailedVM: MealDetailedlViewModel by viewModel<MealDetailedlViewModel>()
+
     private var _binding: FragmentMealDetailedBinding? = null
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -21,6 +23,7 @@ class MealDetailedFragment: Fragment(R.layout.fragment_meal_detailed) {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentMealDetailedBinding.inflate(inflater, container, false)
+
         return binding.root
     }
 
@@ -30,14 +33,15 @@ class MealDetailedFragment: Fragment(R.layout.fragment_meal_detailed) {
     }
 
     private fun init() {
-        initUi()
+        initView()
         initObservers()
     }
 
-    private fun initUi() {
-//        binding.save.setOnClickListener {
+    private fun initView() {
+
+        binding.save.setOnClickListener {
 //            (activity as MainActivity?)?.addFragment(SaveMealFragment())
-//        }
+        }
     }
 
     private fun initObservers() {

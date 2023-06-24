@@ -8,7 +8,7 @@ class Util {
         fun isValidEmail(target: CharSequence?): Boolean {
             return if (target == null) {
                 false
-            } else {
+            }else {
                 Patterns.EMAIL_ADDRESS.matcher(target).matches()
             }
         }

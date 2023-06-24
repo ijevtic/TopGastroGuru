@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Observer
 import com.example.topgastroguru.R
+import com.example.topgastroguru.data.models.User
 import com.example.topgastroguru.databinding.ActivityLoginPageBinding
 import com.example.topgastroguru.presentation.contract.UserContract
 import com.example.topgastroguru.presentation.view.states.CheckCredentialsState
@@ -53,11 +54,11 @@ class ActivityLoginPage : AppCompatActivity() {
         initUi()
         initObservers()
 //        val userToAdd = User(
-//            id = "1",
-//            email = "ivan@ivan.com",
-//            username = "ivan",
-//            password = "ivan",
-//            fullName = "ivan ivan",
+//            id = "2",
+//            email = "sejo@kalac.com",
+//            username = "muuu",
+//            password = "a jesam te volio",
+//            fullName = "bolje mi je sad bez tebe"
 //        )
 //        mainViewModel.addUser(userToAdd)
 //        mainViewModel.getAllUsers()

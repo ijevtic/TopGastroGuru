@@ -3,8 +3,12 @@ package com.example.topgastroguru.modules
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
+import com.example.topgastroguru.data.models.MealDetailed
 import com.example.topgastroguru.data.sources.local.MealDataBase
+import com.example.topgastroguru.data.sources.remote.converters.IngredientAdapter
+import com.example.topgastroguru.util.Constants
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory
 import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
 import io.reactivex.schedulers.Schedulers.single
 import okhttp3.OkHttpClient
@@ -38,6 +42,11 @@ val coreModule = module {
 fun createMoshi(): Moshi {
     return Moshi.Builder()
         .add(Date::class.java, Rfc3339DateJsonAdapter())
+//        .add(
+//            PolymorphicJsonAdapterFactory.of(MealDetailed::class.java, "mealdetailed")
+//                .withSubtype(MealDetailed::class.java, "mealdetailed")
+//        )
+//        .add(IngredientAdapter())
         .build()
 }
 
@@ -45,7 +54,7 @@ fun createRetrofit(moshi: Moshi,
                    httpClient: OkHttpClient
 ): Retrofit {
     return Retrofit.Builder()
-        .baseUrl("https://ghibliapi.vercel.app/")
+        .baseUrl(Constants.BASE_URL)
 //        .baseUrl("https://ghibliapi.herokuapp.com/")
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .addConverterFactory(MoshiConverterFactory.create(moshi).asLenient())

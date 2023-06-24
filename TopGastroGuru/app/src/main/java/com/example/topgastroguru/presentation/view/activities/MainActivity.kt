@@ -1,21 +1,24 @@
 package com.example.topgastroguru.presentation.view.activities
 
 import android.os.Bundle
-import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.topgastroguru.R
+import com.example.topgastroguru.data.repositories.MealRepositoryImpl
+import com.example.topgastroguru.data.sources.local.MealDao
+import com.example.topgastroguru.data.sources.remote.MealService
 import com.example.topgastroguru.databinding.ActivityMainBinding
+import com.example.topgastroguru.presentation.contract.MealDetaildContract
 import com.example.topgastroguru.presentation.view.activities.fragments.AllMealsFragment
-import com.example.topgastroguru.presentation.view.activities.fragments.MealDetailedFragment
 import com.example.topgastroguru.presentation.view.activities.fragments.MealPlanFragment
 import com.example.topgastroguru.presentation.view.activities.fragments.MyMealsFragment
 import com.example.topgastroguru.presentation.view.activities.fragments.ProfileFragment
 import com.example.topgastroguru.presentation.view.activities.fragments.StatisticsFragment
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.example.topgastroguru.presentation.view.viewmodels.MealDetailedlViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
-//  true to skip the login for testing purpouse
+    private val mealDetailedVM: MealDetaildContract.ViewModel by viewModel<MealDetailedlViewModel>()
 
     private lateinit var binding: ActivityMainBinding
 
@@ -41,6 +44,8 @@ class MainActivity : AppCompatActivity() {
         }
         // Set the initial fragment
         replaceFragment(AllMealsFragment())
+//        val mealDetailedVM= MealDetailedlViewModel(MealRepositoryImpl(MealDao(),MealService())
+        mealDetailedVM.fetchMealById("52772")
     }
 
     private fun replaceFragment(fragment: Fragment) {
