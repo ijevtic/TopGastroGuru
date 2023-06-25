@@ -8,9 +8,7 @@ import com.example.topgastroguru.data.sources.local.MealDataBase
 import com.example.topgastroguru.data.sources.remote.converters.IngredientAdapter
 import com.example.topgastroguru.util.Constants
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory
 import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
-import io.reactivex.schedulers.Schedulers.single
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidApplication

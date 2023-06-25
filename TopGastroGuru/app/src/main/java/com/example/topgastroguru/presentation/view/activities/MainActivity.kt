@@ -6,7 +6,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.topgastroguru.databinding.ActivityMainBinding
 import com.example.topgastroguru.presentation.contract.MealDetaildContract
-import com.example.topgastroguru.presentation.view.activities.fragments.*
+import com.example.topgastroguru.presentation.view.activities.fragments.MainFragment
+import com.example.topgastroguru.presentation.view.activities.fragments.MealDetailedFragment
 import com.example.topgastroguru.presentation.view.viewmodels.MealDetailedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
