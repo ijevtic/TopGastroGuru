@@ -8,6 +8,7 @@ class MealMapper {
     companion object {
         fun mapMealResponseToMealSimple(mealResponse: MealResponse): List<MealSimple> {
             val returnList: MutableList<MealSimple> = mutableListOf()
+
             for(meal: Meal in mealResponse.meals) {
                 returnList += MealSimple(
                     id = meal.idMeal,

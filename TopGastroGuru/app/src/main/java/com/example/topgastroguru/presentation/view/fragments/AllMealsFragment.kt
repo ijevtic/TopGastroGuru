@@ -57,15 +57,15 @@ class AllMealsFragment : Fragment(R.layout.fragment_all_meals) {
 
     private fun initRecycler() {
         binding.listRv.layoutManager = LinearLayoutManager(context)
+
+
         adapter = MealAdapter()
         binding.listRv.adapter = adapter
     }
 
     private fun initListeners() {
         binding.inputEt.doAfterTextChanged {
-            if(it.toString().isEmpty()) return@doAfterTextChanged
-//            Toast.makeText(context, "Fetching meals by first letter " + it.toString()[0], Toast.LENGTH_SHORT).show()
-            mealsViewModel.fetchMealsByFirstLetter(it.toString()[0])
+            mealsViewModel.updateSearchQuery(it.toString())
         }
     }
 
@@ -75,7 +75,6 @@ class AllMealsFragment : Fragment(R.layout.fragment_all_meals) {
             renderState(it);
         })
 
-        mealsViewModel.fetchMealsByFirstLetter('a')
     }
 
     private fun renderState(state: MealsState) {
@@ -87,6 +86,7 @@ class AllMealsFragment : Fragment(R.layout.fragment_all_meals) {
             }
             is MealsState.Error -> {
                 showLoadingState(false)
+                adapter.submitList(listOf())
                 Toast.makeText(context, "error torima" + state.message, Toast.LENGTH_SHORT).show()
             }
             is MealsState.Loading -> {
