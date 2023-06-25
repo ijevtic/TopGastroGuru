@@ -21,4 +21,8 @@
     <string name="photo_button">Take photo</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="filter_by">Filter by</string>
+    <string name="filter_by_category">Filter by category</string>
+    <string name="filter_by_area">Filter by Area</string>
+    <string name="filter_by_ingredient">Filter by ingredient</string>
 </resources>

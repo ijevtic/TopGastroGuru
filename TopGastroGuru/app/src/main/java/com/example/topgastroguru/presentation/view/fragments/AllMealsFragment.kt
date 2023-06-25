@@ -14,6 +14,7 @@ import com.example.topgastroguru.presentation.contract.MealsContract
 import com.example.topgastroguru.presentation.view.viewmodels.AllMealsViewModel
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.topgastroguru.presentation.view.activities.MainActivity
 import com.example.topgastroguru.presentation.view.activities.recycler.adapter.MealAdapter
 import com.example.topgastroguru.presentation.view.states.MealsState
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -66,6 +67,13 @@ class AllMealsFragment : Fragment(R.layout.fragment_all_meals) {
     private fun initListeners() {
         binding.inputEt.doAfterTextChanged {
             mealsViewModel.updateSearchQuery(it.toString())
+        }
+
+        binding.filterBtn.setOnClickListener {
+            (activity as MainActivity?)?.addFragmentHide(FilterFragment())
+        }
+
+        binding.sortBtn.setOnClickListener {
         }
     }
 

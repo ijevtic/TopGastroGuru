@@ -48,6 +48,18 @@ class MainActivity : AppCompatActivity() {
         transaction.commit()
     }
 
+    fun addFragmentHide(fragment: Fragment?) {
+        val currentFragment = supportFragmentManager.findFragmentById(binding.fragmentContainer.id)
+        val transaction = supportFragmentManager.beginTransaction()
+
+        if (currentFragment != null) {
+            transaction.hide(currentFragment)
+        }
+
+        transaction.add(binding.fragmentContainer.id, fragment!!).addToBackStack(null)
+        transaction.commit()
+    }
+
     private fun replaceFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(binding.fragmentContainer.id, fragment)

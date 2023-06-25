@@ -6,16 +6,37 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".presentation.view.fragments.AllMealsFragment">
 
-    <EditText
-        android:id="@+id/inputEt"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+    <LinearLayout
+        android:id="@+id/topPanel"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="16dp"
-        app:layout_goneMarginEnd="16dp"
-        android:layout_marginEnd="16dp"/>
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:weightSum="5">
+        <EditText
+            android:id="@+id/inputEt"
+            android:layout_weight="3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:layout_marginStart="16dp"
+            app:layout_goneMarginEnd="16dp"
+            android:layout_marginEnd="16dp" />
+        <Button
+            android:id="@+id/sortBtn"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Sort"/>
+        <Button
+            android:id="@+id/filterBtn"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Filter"/>
+    </LinearLayout>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/listRv"
@@ -23,7 +44,7 @@
         android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/inputEt"
+        app:layout_constraintTop_toBottomOf="@id/topPanel"
         app:layout_constraintBottom_toBottomOf="parent"
         android:paddingTop="16dp"
         android:clipToPadding="false"/>
