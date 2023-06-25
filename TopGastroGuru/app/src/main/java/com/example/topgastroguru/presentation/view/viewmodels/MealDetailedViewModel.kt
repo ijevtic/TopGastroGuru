@@ -3,6 +3,7 @@ package com.example.topgastroguru.presentation.view.viewmodels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.topgastroguru.data.models.MealDetailed
+import com.example.topgastroguru.data.models.entities.MealEntity
 import com.example.topgastroguru.data.repositories.MealRepository
 import com.example.topgastroguru.data.sources.remote.converters.MealDetailedConverter
 import com.example.topgastroguru.presentation.contract.MealDetaildContract
@@ -59,6 +60,10 @@ class MealDetailedViewModel(
                 }
             )
         subscriptions.add(subscription)
+    }
+
+    override fun saveMealToDB(meal: MealEntity) {
+        TODO("Not yet implemented")
     }
 
     fun getMealDetailed(): MealDetailed? {

@@ -6,13 +6,13 @@ import java.util.Date
 
 @Entity(tableName = "meal")
 data class MealEntity(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     val id:String,
     val name: String,
     val img:String,
     val instructions:String,
     val link:String,
-    // TODO sastojci i mere
+    val ingredients:Map<String, String>,
 //  Category can be chicken, beef, desert...
     val category: String,
     val date:Date,

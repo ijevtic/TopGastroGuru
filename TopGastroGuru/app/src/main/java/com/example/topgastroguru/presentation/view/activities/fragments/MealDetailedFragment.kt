@@ -81,8 +81,8 @@ class MealDetailedFragment: Fragment(R.layout.fragment_meal_detailed) {
         Timber.e("MealDetailedFragment got notified") // null
         if (meal != null) {
             nameTV.setText(meal.name)
-            areaTV.setText(meal.area)
-            instructionsTV.setText(meal.instructions)
+            areaTV.setText("Area: " + meal.area)
+            instructionsTV.setText("Instructions:\n"+meal.instructions)
             categoryTV.setText(meal.category)
             tagsTV.setText(meal.tags)
             linkTV.setText(meal.link)
