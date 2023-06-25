@@ -45,7 +45,7 @@ class MealDetailedViewModel(
             .subscribe(
                 {
                     meal.value = MealDetailed(
-                        it.id,
+                        it.id.toString(),
                         it.name,
                         it.category,
                         it.date.toString(),

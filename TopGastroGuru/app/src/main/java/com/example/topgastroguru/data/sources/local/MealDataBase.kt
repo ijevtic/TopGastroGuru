@@ -13,7 +13,7 @@ import com.example.topgastroguru.data.sources.local.converters.MapConverter
                 MealEntity::class],
     version = 2,
     exportSchema = false)
-@TypeConverters(DateConverter::class, MapConverter::class)
+@TypeConverters(DateConverter::class)
 abstract class MealDataBase : RoomDatabase() {
     abstract fun getUserDao(): UserDao
     // TODO figure out what does this do
