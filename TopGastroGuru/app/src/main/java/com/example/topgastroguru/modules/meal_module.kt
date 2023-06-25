@@ -18,7 +18,7 @@ val mealModule = module {
 
     viewModel { MealDetailedViewModel(mealRepository = get()) }
 
-//    viewModel { AllMealsViewModel(mealRepository = get()) }
+    viewModel { AllMealsViewModel(mealRepository = get()) }
 
     single<MealRepository> { MealRepositoryImpl(localDataSource = get(), remoteDataSource = get ()) }
 
