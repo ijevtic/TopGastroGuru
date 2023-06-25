@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.lifecycle.Observer
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,9 +12,13 @@ import com.example.topgastroguru.R
 import com.example.topgastroguru.databinding.FragmentFilterMealsBinding
 import com.example.topgastroguru.presentation.view.activities.recycler.adapter.CategoryAdapter
 import com.example.topgastroguru.presentation.view.states.CategoriesState
+import com.example.topgastroguru.presentation.view.viewmodels.CategoryViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import timber.log.Timber
 
 class FilterFragment : Fragment(R.layout.fragment_filter_meals) {
 
+    private val viewModel: CategoryViewModel by activityViewModel<CategoryViewModel>()
     private var _binding: FragmentFilterMealsBinding? = null
 
     private val binding get() = _binding!!
@@ -41,7 +45,6 @@ class FilterFragment : Fragment(R.layout.fragment_filter_meals) {
 
     private fun init() {
         initUi()
-        initObservers()
     }
 
     private fun initUi() {
@@ -49,12 +52,17 @@ class FilterFragment : Fragment(R.layout.fragment_filter_meals) {
             binding.filterBtns.visibility = View.GONE
             binding.listRv.visibility = View.VISIBLE
             initRecycler()
-
+            initObservers()
+            Timber.e("fetching categories")
+            viewModel.fetchCategories()
         }
     }
 
     private fun initObservers() {
-
+        viewModel.categoriesState.observe(viewLifecycleOwner, Observer {
+            Timber.e("category state: $it")
+            renderState(it);
+        })
     }
 
     override fun onDestroyView() {

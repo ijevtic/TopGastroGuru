@@ -1,24 +1,17 @@
 package com.example.topgastroguru.presentation.view.viewmodels
 
-import android.widget.Toast
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.topgastroguru.data.models.MealDetailed
 import com.example.topgastroguru.data.models.MealSimple
-import com.example.topgastroguru.data.models.Resource
-import com.example.topgastroguru.data.models.responses.Meal
 import com.example.topgastroguru.data.repositories.MealRepository
-import com.example.topgastroguru.mapper.MealMapper
+import com.example.topgastroguru.data.sources.remote.converters.MealSimpleConverter
 import com.example.topgastroguru.presentation.contract.MealsContract
 import com.example.topgastroguru.presentation.view.states.MealsState
-import com.example.topgastroguru.presentation.view.states.UsersState
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
-import java.util.concurrent.TimeUnit
 
 
 class AllMealsViewModel(
@@ -53,7 +46,7 @@ class AllMealsViewModel(
         }
         val subscription = mealRepository
             .fetchMealsByFirstLetter(queryChar!!)
-            .map<MealsState> { MealsState.Success(MealMapper.mapMealResponseToMealSimple(it)) }
+            .map<MealsState> { MealsState.Success(MealSimpleConverter.mapMealResponseToMealSimple(it)) }
             .startWith(MealsState.Loading)
             .onErrorReturn { MealsState.Error(it.message ?: "Unknown error occurred") }
             .subscribeOn(Schedulers.io())

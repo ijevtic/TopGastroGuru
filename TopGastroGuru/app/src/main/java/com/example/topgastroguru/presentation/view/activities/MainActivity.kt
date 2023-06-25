@@ -4,10 +4,12 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.topgastroguru.databinding.ActivityMainBinding
+import com.example.topgastroguru.presentation.contract.CategoriesContract
 import com.example.topgastroguru.presentation.contract.MealDetaildContract
 import com.example.topgastroguru.presentation.contract.MealsContract
 import com.example.topgastroguru.presentation.view.fragments.MainFragment
 import com.example.topgastroguru.presentation.view.viewmodels.AllMealsViewModel
+import com.example.topgastroguru.presentation.view.viewmodels.CategoryViewModel
 import com.example.topgastroguru.presentation.view.viewmodels.MealDetailedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -15,6 +17,7 @@ class MainActivity : AppCompatActivity() {
 
     private val mealDetailedVM: MealDetaildContract.ViewModel by viewModel<MealDetailedViewModel>()
     private val mealsViewModel: MealsContract.ViewModel by viewModel<AllMealsViewModel>()
+    private val categoryViewModel: CategoriesContract.ViewModel by viewModel<CategoryViewModel>()
 
     private lateinit var binding: ActivityMainBinding
 

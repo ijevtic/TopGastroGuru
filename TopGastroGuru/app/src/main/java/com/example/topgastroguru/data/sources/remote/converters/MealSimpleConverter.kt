@@ -1,10 +1,10 @@
-package com.example.topgastroguru.mapper
+package com.example.topgastroguru.data.sources.remote.converters
 
 import com.example.topgastroguru.data.models.MealSimple
 import com.example.topgastroguru.data.models.responses.Meal
 import com.example.topgastroguru.data.models.responses.MealResponse
 
-class MealMapper {
+class MealSimpleConverter {
     companion object {
         fun mapMealResponseToMealSimple(mealResponse: MealResponse): List<MealSimple> {
             val returnList: MutableList<MealSimple> = mutableListOf()
