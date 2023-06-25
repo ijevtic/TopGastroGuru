@@ -36,6 +36,7 @@ class MealRepositoryImpl(
     }
 
     override fun fetchMealsByFirstLetter(letter: Char): Observable<MealResponse> {
+        Timber.e("1 Fetching meals with first letter: $letter")
         return remoteDataSource.getMealsByFirstLetter(letter)
     }
 }

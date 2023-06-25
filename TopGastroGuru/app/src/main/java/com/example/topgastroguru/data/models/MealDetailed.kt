@@ -2,16 +2,16 @@ package com.example.topgastroguru.data.models
 
 class MealDetailed(
     val id:String,
-    val name: String,
-    val category: String,
-    val area: String,
-    val instructions: String,
-    val mealThumb: String,
-    val tags: String,
-    val link: String,
+    val name: String?,
+    val category: String?,
+    val area: String?,
+    val instructions: String?,
+    val mealThumb: String?,
+    val tags: String?,
+    val link: String?,
     val ingredients :Map<String,String>? = null
 ){
-    private val calValue= "Not avilable"
+    private val calValue= "Not available"
 
     private fun calculateCalValue(): Unit{
         //TODO calculate amount of calories and add this method in init block

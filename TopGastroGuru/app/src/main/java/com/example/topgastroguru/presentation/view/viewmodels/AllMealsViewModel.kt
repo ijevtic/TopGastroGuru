@@ -32,6 +32,7 @@ class AllMealsViewModel(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { it ->
+                Timber.e("Response meals" + it.toString());
                 when (it) {
                     is MealsState.Success -> {
                         mealsState.value = MealsState.Success(it.meals)

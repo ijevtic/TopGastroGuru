@@ -20,6 +20,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.*
 import java.util.concurrent.TimeUnit
 
+
 val coreModule = module {
 
     single<SharedPreferences> {
@@ -51,6 +52,7 @@ fun createMoshi(): Moshi {
 fun createRetrofit(moshi: Moshi,
                    httpClient: OkHttpClient
 ): Retrofit {
+
     return Retrofit.Builder()
         .baseUrl(Constants.BASE_URL)
 //        .baseUrl("https://ghibliapi.herokuapp.com/")
