@@ -116,16 +116,16 @@ class MealDetailedFragment: Fragment(R.layout.fragment_meal_detailed) {
     }
 
     private fun initObservers() {
-        mealDetailedVM.meal.observe(viewLifecycleOwner, Observer {
-            Timber.e("Meal: $it")
-            nameTV.setText(it.name)
-            areaTV.setText(it.area)
-            instructionsTV.setText(it.instructions)
-            categoryTV.setText(it.category)
-            tagsTV.setText(it.tags)
-            linkTV.setText(it.link)
-            photoIV.setImageURI(it.mealThumb.toUri())
-        })
+//        mealDetailedVM.meal.observe(viewLifecycleOwner, Observer {
+//            Timber.e("Meal: $it")
+//            nameTV.setText(it.name)
+//            areaTV.setText(it.area)
+//            instructionsTV.setText(it.instructions)
+//            categoryTV.setText(it.category)
+//            tagsTV.setText(it.tags)
+//            linkTV.setText(it.link)
+//            photoIV.setImageURI(it.mealThumb.toUri())
+//        })
     }
 
     override fun onDestroyView() {

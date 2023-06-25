@@ -1,22 +1,35 @@
 package com.example.topgastroguru.presentation.view.activities.fragments
 
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.Activity.RESULT_OK
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.os.AsyncTask
 import android.os.Bundle
+import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.topgastroguru.R
 import com.example.topgastroguru.databinding.FragmentSaveMealBinding
 import com.example.topgastroguru.presentation.view.viewmodels.MealDetailedViewModel
+import com.example.topgastroguru.util.Constants
+import com.example.topgastroguru.util.Constants.Companion.REQUEST_IMAGE_CAPTURE
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
-import android.app.AlertDialog;
 import timber.log.Timber
-import java.util.Calendar;
+import java.util.Calendar
 
 
 class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
@@ -29,12 +42,12 @@ class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
     private lateinit var areaTV: TextView
     private lateinit var instructionsTV: TextView
     private lateinit var linkTV: TextView
-    private lateinit var datepickerTV: TextView
-    private lateinit var photoIV: ImageView
+    private lateinit var typeET: EditText
     private lateinit var categoryTV: TextView
-    private lateinit var tagsTV: TextView
     private lateinit var saveBT: Button
-
+    private lateinit var quitBT: Button
+    private lateinit var photoIV: ImageView
+    private lateinit var photoBT: Button
     private lateinit var dateButton: Button
     private lateinit var datePickerDialog: DatePickerDialog
 
@@ -54,23 +67,109 @@ class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
 
     private fun init() {
         initUi()
+        initListeners()
         initObservers()
     }
 
     private fun initUi() {
         dateButton = binding.datePicker
+        photoIV = binding.photo
+        photoBT = binding.photoBT
+        nameTV = binding.name
+        areaTV = binding.area
+        instructionsTV = binding.instructions
+        linkTV = binding.link
+        typeET = binding.type
+        categoryTV = binding.category
+        saveBT = binding.save
+        quitBT = binding.quit
 
 
         initDatePicker()
+        initValues()
+
+        initListeners()
+    }
+
+    private fun initValues(){
         dateButton.setText(getTodaysDate())
+
+        var meal = mealDetailedVM.getMealDetailed()
+        if (meal != null) {
+            nameTV.setText(meal.name)
+            areaTV.setText(meal.area)
+            instructionsTV.setText(meal.instructions)
+            categoryTV.setText(meal.category)
+            linkTV.setText(meal.link)
+
+            DownloadImageFromInternet(photoIV).execute(meal.mealThumb)
+        }
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    @Suppress("DEPRECATION")
+    private inner class DownloadImageFromInternet(var imageView: ImageView) : AsyncTask<String, Void, Bitmap?>() {
+        init {
+            Toast.makeText(requireContext().applicationContext, "Please wait, it may take a few minute...",     Toast.LENGTH_SHORT).show()
+        }
+        override fun doInBackground(vararg urls: String): Bitmap? {
+            val imageURL = urls[0]
+            var image: Bitmap? = null
+            try {
+                val `in` = java.net.URL(imageURL).openStream()
+                image = BitmapFactory.decodeStream(`in`)
+            }
+            catch (e: Exception) {
+                Log.e("Error Message", e.message.toString())
+                e.printStackTrace()
+            }
+            return image
+        }
+        override fun onPostExecute(result: Bitmap?) {
+            imageView.setImageBitmap(result)
+        }
+    }
+
+
+
+    private fun initListeners(){
+        photoBT.setOnClickListener(View.OnClickListener {
+            val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            startActivityForResult(cameraIntent, Constants.REQUEST_IMAGE_CAPTURE)
+        })
 
         binding.datePicker.setOnClickListener {
             openDatePicker()
 //            Timber.e("Value of dateButton: "+ dateButton.text)
         }
 
-        binding.save.setOnClickListener {
+        saveBT.setOnClickListener {
+        //TODO: Save meal to database
+            Toast.makeText(requireContext().applicationContext, "Meal saved!", Toast.LENGTH_SHORT).show()
+        }
 
+        quitBT.setOnClickListener(View.OnClickListener {
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setTitle("Quit")
+            builder.setMessage("Are you sure you want to quit?")
+            builder.setPositiveButton("Yes") { dialogInterface, which ->
+//                activity?.finish()
+//                does this work?
+                requireActivity().supportFragmentManager.popBackStack()
+            }
+            builder.setNegativeButton("No") { dialogInterface, which ->
+                Toast.makeText(requireContext().applicationContext, "Keep grinding", Toast.LENGTH_SHORT).show()
+            }
+            val alertDialog: AlertDialog = builder.create()
+            alertDialog.setCancelable(false)
+            alertDialog.show()
+        })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            val imageBitmap = data?.extras?.get("data") as Bitmap
+            photoIV.setImageBitmap(imageBitmap)
         }
     }
 
