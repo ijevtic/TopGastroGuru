@@ -23,13 +23,17 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.topgastroguru.R
+import com.example.topgastroguru.data.models.entities.MealEntity
 import com.example.topgastroguru.databinding.FragmentSaveMealBinding
 import com.example.topgastroguru.presentation.view.viewmodels.MealDetailedViewModel
 import com.example.topgastroguru.util.Constants
 import com.example.topgastroguru.util.Constants.Companion.REQUEST_IMAGE_CAPTURE
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import timber.log.Timber
+import java.io.File
 import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 
 class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
@@ -37,6 +41,8 @@ class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
 
     private var _binding: FragmentSaveMealBinding? = null
     private val binding get() = _binding!!
+
+    private var date:Date= Date()
 
     private lateinit var nameTV: TextView
     private lateinit var areaTV: TextView
@@ -67,6 +73,7 @@ class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
 
     private fun init() {
         initUi()
+        initValues()
         initListeners()
         initObservers()
     }
@@ -83,15 +90,11 @@ class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
         categoryTV = binding.category
         saveBT = binding.save
         quitBT = binding.quit
-
-
-        initDatePicker()
-        initValues()
-
-        initListeners()
     }
 
     private fun initValues(){
+        initDatePicker()
+
         dateButton.setText(getTodaysDate())
 
         var meal = mealDetailedVM.getMealDetailed()
@@ -106,6 +109,69 @@ class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
         }
     }
 
+    private fun initListeners(){
+        photoBT.setOnClickListener(View.OnClickListener {
+            val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE)
+        })
+
+        binding.datePicker.setOnClickListener {
+            openDatePicker()
+//            Timber.e("Value of dateButton: "+ dateButton.text)
+        }
+
+//        saveBT.setOnClickListener {
+//        //TODO: Save meal to database
+//            mealDetailedVM.getMealDetailed()?.ingredients?.let { it1 ->
+//                mealDetailedVM.getMealDetailed()?.id?.let { it2 ->
+//                    MealEntity(
+//                        name = nameTV.text.toString(),
+//                        ingredients = it1,
+//                        instructions = instructionsTV.text.toString(),
+//                        link = linkTV.text.toString(),
+//                        category = categoryTV.text.toString(),
+//                        type = typeET.text.toString(),
+//            //                    img = mealDetailedVM.getMealDetailed()?.mealThumb,
+//                        date = date,
+//                        id = it2
+//
+//                    )
+//                }
+//            }?.let { it2 -> mealDetailedVM.saveMealToDB(it2) }
+//
+//            Toast.makeText(requireContext().applicationContext, "Meal saved!", Toast.LENGTH_SHORT).show()
+//        }
+
+        quitBT.setOnClickListener(View.OnClickListener {
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setTitle("Quit")
+            builder.setMessage("Are you sure you want to quit?")
+            builder.setPositiveButton("Yes") { dialogInterface, which ->
+//                activity?.finish()
+//                does this work?
+                requireActivity().supportFragmentManager.popBackStack()
+            }
+            builder.setNegativeButton("No") { dialogInterface, which ->
+                Toast.makeText(requireContext().applicationContext, "Keep grinding", Toast.LENGTH_SHORT).show()
+            }
+            val alertDialog: AlertDialog = builder.create()
+            alertDialog.setCancelable(false)
+            alertDialog.show()
+        })
+    }
+
+
+
+    private fun initObservers() {
+
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    // Image download
     @SuppressLint("StaticFieldLeak")
     @Suppress("DEPRECATION")
     private inner class DownloadImageFromInternet(var imageView: ImageView) : AsyncTask<String, Void, Bitmap?>() {
@@ -130,42 +196,7 @@ class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
         }
     }
 
-
-
-    private fun initListeners(){
-        photoBT.setOnClickListener(View.OnClickListener {
-            val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            startActivityForResult(cameraIntent, Constants.REQUEST_IMAGE_CAPTURE)
-        })
-
-        binding.datePicker.setOnClickListener {
-            openDatePicker()
-//            Timber.e("Value of dateButton: "+ dateButton.text)
-        }
-
-        saveBT.setOnClickListener {
-        //TODO: Save meal to database
-            Toast.makeText(requireContext().applicationContext, "Meal saved!", Toast.LENGTH_SHORT).show()
-        }
-
-        quitBT.setOnClickListener(View.OnClickListener {
-            val builder = AlertDialog.Builder(requireContext())
-            builder.setTitle("Quit")
-            builder.setMessage("Are you sure you want to quit?")
-            builder.setPositiveButton("Yes") { dialogInterface, which ->
-//                activity?.finish()
-//                does this work?
-                requireActivity().supportFragmentManager.popBackStack()
-            }
-            builder.setNegativeButton("No") { dialogInterface, which ->
-                Toast.makeText(requireContext().applicationContext, "Keep grinding", Toast.LENGTH_SHORT).show()
-            }
-            val alertDialog: AlertDialog = builder.create()
-            alertDialog.setCancelable(false)
-            alertDialog.show()
-        })
-    }
-
+    // Image capture
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             val imageBitmap = data?.extras?.get("data") as Bitmap
@@ -173,21 +204,14 @@ class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
         }
     }
 
-    private fun initObservers() {
-
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
+    //   Date Picker
     private fun getTodaysDate(): String? {
         val cal: Calendar = Calendar.getInstance()
         val year: Int = cal.get(Calendar.YEAR)
         var month: Int = cal.get(Calendar.MONTH)
         month = month + 1
         val day: Int = cal.get(Calendar.DAY_OF_MONTH)
+        date= Date(year, month, day)
         return makeDateString(day, month, year)
     }
 
@@ -196,6 +220,7 @@ class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
             OnDateSetListener { datePicker, year, month, day ->
                 var month = month
                 month = month + 1
+                date= Date(year, month, day)
                 val date = makeDateString(day, month, year)
                 dateButton.text = date
             }
