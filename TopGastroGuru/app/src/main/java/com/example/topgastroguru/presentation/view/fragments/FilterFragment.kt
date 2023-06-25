@@ -12,6 +12,7 @@ import com.example.topgastroguru.R
 import com.example.topgastroguru.databinding.FragmentFilterMealsBinding
 import com.example.topgastroguru.presentation.view.activities.recycler.adapter.CategoryAdapter
 import com.example.topgastroguru.presentation.view.states.CategoriesState
+import com.example.topgastroguru.presentation.view.states.CategoryState
 import com.example.topgastroguru.presentation.view.viewmodels.CategoryViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import timber.log.Timber
@@ -70,9 +71,16 @@ class FilterFragment : Fragment(R.layout.fragment_filter_meals) {
         _binding = null
     }
 
+
+
     private fun initRecycler() {
         binding.listRv.layoutManager = LinearLayoutManager(context)
-        adapter = CategoryAdapter()
+        adapter = CategoryAdapter { category ->
+            // Handle the item click event here
+            Timber.e("Clicked on category: ${category.strCategory}")
+            viewModel.selectedCategoryState.value = CategoryState.Selected(category)
+            requireActivity().supportFragmentManager.popBackStack()
+        }
         binding.listRv.adapter = adapter
     }
 

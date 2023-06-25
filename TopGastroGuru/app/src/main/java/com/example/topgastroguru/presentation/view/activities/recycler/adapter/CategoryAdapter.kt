@@ -8,7 +8,7 @@ import com.example.topgastroguru.databinding.LayoutItemCategoryBinding
 import com.example.topgastroguru.presentation.view.activities.recycler.diff.CategoryDiffCallback
 import com.example.topgastroguru.presentation.view.activities.recycler.viewholder.CategoryViewHolder
 
-class CategoryAdapter : ListAdapter<Category, CategoryViewHolder>(CategoryDiffCallback()) {
+class CategoryAdapter(private val onItemClick: (Category) -> Unit) : ListAdapter<Category, CategoryViewHolder>(CategoryDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
         val itemBinding = LayoutItemCategoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -16,7 +16,12 @@ class CategoryAdapter : ListAdapter<Category, CategoryViewHolder>(CategoryDiffCa
     }
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        val category = getItem(position)
+        holder.bind(category)
+
+        holder.itemView.setOnClickListener {
+            onItemClick(category)
+        }
     }
 
 }
