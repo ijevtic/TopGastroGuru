@@ -6,14 +6,19 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.topgastroguru.databinding.ActivityMainBinding
 import com.example.topgastroguru.presentation.contract.MealDetaildContract
-import com.example.topgastroguru.presentation.view.activities.fragments.MainFragment
-import com.example.topgastroguru.presentation.view.activities.fragments.MealDetailedFragment
+import com.example.topgastroguru.presentation.contract.MealsContract
+import com.example.topgastroguru.presentation.view.fragments.MainFragment
+import com.example.topgastroguru.presentation.view.fragments.MealDetailedFragment
+import com.example.topgastroguru.presentation.view.viewmodels.AllMealsViewModel
 import com.example.topgastroguru.presentation.view.viewmodels.MealDetailedViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
-    private val mealDetailedVM: MealDetaildContract.ViewModel by viewModel<MealDetailedViewModel>()
+
+//    private val mealDetailedVM: MealDetaildContract.ViewModel by viewModel<MealDetailedViewModel>()
+//    private val mealsViewModel: MealsContract.ViewModel by viewModel<AllMealsViewModel>()
 
     private lateinit var binding: ActivityMainBinding
 
@@ -35,10 +40,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initObservers(){
-        mealDetailedVM.meal.observe(this, Observer {
-            Timber.e("MainActivity notified of meal change")
-            addFragment(MealDetailedFragment())
-        })
+//        mealDetailedVM.meal.observe(this, Observer {
+//            Timber.e("MainActivity notified of meal change")
+//            addFragment(MealDetailedFragment())
+//        })
     }
 
     fun addFragment(fragment: Fragment?) {

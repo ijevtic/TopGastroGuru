@@ -1,4 +1,4 @@
-package com.example.topgastroguru.presentation.view.activities.fragments
+package com.example.topgastroguru.presentation.view.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,11 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.topgastroguru.R
-import com.example.topgastroguru.databinding.FragmentStatisticsBinding
+import com.example.topgastroguru.databinding.FragmentMealPlanBinding
 
-class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
+class MealPlanFragment : Fragment(R.layout.fragment_meal_plan) {
 
-    private var _binding: FragmentStatisticsBinding? = null
+    private var _binding: FragmentMealPlanBinding? = null
 
     private val binding get() = _binding!!
 
@@ -23,7 +23,7 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentStatisticsBinding.inflate(inflater, container, false)
+        _binding = FragmentMealPlanBinding.inflate(inflater, container, false)
         return binding.root
     }
 

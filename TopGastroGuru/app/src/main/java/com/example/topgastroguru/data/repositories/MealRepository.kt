@@ -12,6 +12,7 @@ interface MealRepository {
     fun insertMeal(meal: MealEntity): Completable
     fun deleteMealById(id:String)
     fun deleteAndInsertMeal(id: String, meal: MealEntity)
+    fun fetchMealsByFirstLetter(letter: Char): Observable<MealResponse>
 
 //    fun fetchAll(): Observable<Resource<Unit>>
 //    fun getAll(): Observable<List<Movie>>

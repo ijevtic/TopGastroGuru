@@ -34,4 +34,8 @@ class MealRepositoryImpl(
     override fun deleteAndInsertMeal(id: String, meal: MealEntity) {
         localDataSource.deleteAndInsertMeal(id,meal)
     }
+
+    override fun fetchMealsByFirstLetter(letter: Char): Observable<MealResponse> {
+        return remoteDataSource.getMealsByFirstLetter(letter)
+    }
 }

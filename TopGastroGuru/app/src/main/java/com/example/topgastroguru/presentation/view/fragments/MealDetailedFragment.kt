@@ -1,4 +1,4 @@
-package com.example.topgastroguru.presentation.view.activities.fragments
+package com.example.topgastroguru.presentation.view.fragments
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap

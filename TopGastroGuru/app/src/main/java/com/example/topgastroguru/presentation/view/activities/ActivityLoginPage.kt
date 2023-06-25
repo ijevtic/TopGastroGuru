@@ -54,11 +54,11 @@ class ActivityLoginPage : AppCompatActivity() {
         initUi()
         initObservers()
 //        val userToAdd = User(
-//            id = "2",
-//            email = "sejo@kalac.com",
-//            username = "muuu",
-//            password = "a jesam te volio",
-//            fullName = "bolje mi je sad bez tebe"
+//            id = "1",
+//            email = "ivan@ivan.com",
+//            username = "ivan",
+//            password = "ivan",
+//            fullName = "ivan ivan"
 //        )
 //        mainViewModel.addUser(userToAdd)
 //        mainViewModel.getAllUsers()

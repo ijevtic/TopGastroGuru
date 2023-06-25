@@ -6,6 +6,7 @@ import com.example.topgastroguru.data.repositories.UserRepository
 import com.example.topgastroguru.data.repositories.UserRepositoryImpl
 import com.example.topgastroguru.data.sources.local.MealDataBase
 import com.example.topgastroguru.data.sources.remote.MealService
+import com.example.topgastroguru.presentation.view.viewmodels.AllMealsViewModel
 import com.example.topgastroguru.presentation.view.viewmodels.LoginViewModel
 import com.example.topgastroguru.presentation.view.viewmodels.MealDetailedViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -16,6 +17,8 @@ val mealModule = module {
     viewModel { LoginViewModel(userRepository = get()) }
 
     viewModel { MealDetailedViewModel(mealRepository = get()) }
+
+//    viewModel { AllMealsViewModel(mealRepository = get()) }
 
     single<MealRepository> { MealRepositoryImpl(localDataSource = get(), remoteDataSource = get ()) }
 
