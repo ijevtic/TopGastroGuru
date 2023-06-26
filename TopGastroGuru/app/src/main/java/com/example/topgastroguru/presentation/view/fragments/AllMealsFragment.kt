@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
@@ -16,13 +18,14 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.topgastroguru.presentation.view.activities.MainActivity
 import com.example.topgastroguru.presentation.view.activities.recycler.adapter.MealAdapter
-import com.example.topgastroguru.presentation.view.activities.recycler.adapter.ParameterAdapter
 import com.example.topgastroguru.presentation.view.states.MealsState
 import com.example.topgastroguru.presentation.view.states.ParameterState
 import com.example.topgastroguru.presentation.view.viewmodels.MealDetailedViewModel
 import com.example.topgastroguru.presentation.view.viewmodels.ParameterViewModel
+import com.example.topgastroguru.util.SortType
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import timber.log.Timber
+import kotlin.math.min
 
 class AllMealsFragment : Fragment(R.layout.fragment_all_meals) {
 
@@ -30,6 +33,8 @@ class AllMealsFragment : Fragment(R.layout.fragment_all_meals) {
     private val mealsViewModel: MealsContract.ViewModel by activityViewModel<AllMealsViewModel>()
     private val parameterViewModel: ParameterViewModel by activityViewModel<ParameterViewModel>()
     private val mealDetailedViewModel: MealDetailedViewModel by activityViewModel<MealDetailedViewModel>()
+    private val sortList = arrayOf(SortType.NONE, SortType.ABC, SortType.CALORIES)
+    private val paginationList = arrayOf(10, 10, 20, 50);
     private val binding get() = _binding!!
 
     private lateinit var adapter: MealAdapter
@@ -74,8 +79,16 @@ class AllMealsFragment : Fragment(R.layout.fragment_all_meals) {
         binding.listRv.adapter = adapter
     }
 
+    private var pageSize = 10
+    private var currentPage = 0
+
+
     private fun initListeners() {
-        binding.inputEt.doAfterTextChanged {
+        binding.nameSearch.doAfterTextChanged {
+            mealsViewModel.updateSearchQuery(it.toString())
+        }
+
+        binding.tagSearch.doAfterTextChanged {
             mealsViewModel.updateSearchQuery(it.toString())
         }
 
@@ -83,14 +96,66 @@ class AllMealsFragment : Fragment(R.layout.fragment_all_meals) {
             (activity as MainActivity?)?.addFragmentHide(FilterFragment())
         }
 
-        binding.sortBtn.setOnClickListener {
+        val sortArray = resources.getStringArray(R.array.sort_array)
+
+        ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            sortArray
+        ).apply {
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            binding.sortSpinner.adapter = this
+            binding.sortSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    val selectedItem = getItem(position)
+                    mealsViewModel.setSort(sortList[position])
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    // Handle the case where no item is selected (optional)
+                }
+            }
+        }
+
+        val paginationArray = resources.getStringArray(R.array.pagination_array)
+
+        ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            paginationArray
+        ).apply {
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            binding.pageSpinner.adapter = this
+            binding.pageSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    currentPage = 0
+                    pageSize = paginationList[position]
+                    renderAdapter()
+//                    mealsViewModel.setSort(sortList[position])
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    // Handle the case where no item is selected (optional)
+                }
+            }
+        }
+
+        binding.backwardBtn.setOnClickListener {
+            currentPage--
+            renderAdapter()
+        }
+
+        binding.forwardBtn.setOnClickListener {
+            currentPage++
+            renderAdapter()
         }
     }
 
     private fun initObservers() {
         mealsViewModel.mealsState.observe(viewLifecycleOwner, Observer {
             Timber.e("desilo se")
-            renderState(it);
+            currentPage = 0
+            renderState(it)
         })
 
         parameterViewModel.selectedParameterState.observe(viewLifecycleOwner, Observer {
@@ -104,21 +169,49 @@ class AllMealsFragment : Fragment(R.layout.fragment_all_meals) {
     }
 
     private fun renderState(state: MealsState) {
+        binding.pageNumberTV.text = (currentPage+1).toString()
         when (state) {
             is MealsState.Success -> {
                 showLoadingState(false)
-                Toast.makeText(context, "Success " + state.meals.size, Toast.LENGTH_SHORT).show()
-                adapter.submitList(state.meals)
+//                adapter.submitList(state.meals)
+                renderAdapter()
             }
             is MealsState.Error -> {
                 showLoadingState(false)
+//                renderAdapter()
                 adapter.submitList(listOf())
-                Toast.makeText(context, "error torima" + state.message, Toast.LENGTH_SHORT).show()
+                binding.forwardBtn.isEnabled = false
+                binding.backwardBtn.isEnabled = false
             }
             is MealsState.Loading -> {
                 showLoadingState(true)
             }
         }
+    }
+
+    private fun renderAdapter() {
+        binding.pageNumberTV.text = (currentPage+1).toString()
+        var state: MealsState = mealsViewModel.mealsState.value!!
+
+        if(state is MealsState.Success) {
+            val totalNum = state.meals.size
+            binding.forwardBtn.isEnabled = (currentPage+1)*pageSize < totalNum
+            binding.backwardBtn.isEnabled = currentPage > 0
+            if(state.meals.size == 0) {
+                adapter.submitList(listOf())
+                return
+            }
+            val minIndex = currentPage * pageSize
+            val maxIndex = min((currentPage + 1) * pageSize, state.meals.size)
+            adapter.submitList(
+                state.meals.subList(
+                    minIndex,
+                    maxIndex
+                )
+            )
+        }
+        else
+            adapter.submitList(listOf())
     }
 
     private fun showLoadingState(loading: Boolean) {
@@ -131,4 +224,12 @@ class AllMealsFragment : Fragment(R.layout.fragment_all_meals) {
         super.onDestroyView()
         _binding = null
     }
+
+//    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+//        mealsViewModel.setSort(sortList[position])
+//    }
+//
+//    override fun onNothingSelected(p0: AdapterView<*>?) {
+//        TODO("Not yet implemented")
+//    }
 }

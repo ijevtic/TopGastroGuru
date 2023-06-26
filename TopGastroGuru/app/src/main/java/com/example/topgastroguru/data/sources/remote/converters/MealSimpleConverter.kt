@@ -16,6 +16,7 @@ class MealSimpleConverter {
                     link = meal.strMealThumb,
                     strCategory = meal.strCategory?:"",
                     strArea = meal.strArea?:"",
+                    strTags = meal.strTags?:"",
                     ingredients = mapIngredientsToHashMap(meal)
                 )
             }
