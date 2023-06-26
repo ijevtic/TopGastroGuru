@@ -22,6 +22,11 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
+    private val allMealsFragment by lazy { AllMealsFragment() }
+    private val myMealsFragment by lazy { MyMealsFragment() }
+    private val mealPlanFragment by lazy { MealPlanFragment() }
+    private val statisticsFragment by lazy { StatisticsFragment() }
+    private val profileFragment by lazy { ProfileFragment() }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,13 +37,13 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         binding.bottomNavigationView.setOnItemSelectedListener { item ->
             val fragment: Fragment = when (item.itemId) {
-                R.id.navigation_1 -> AllMealsFragment()
-                R.id.navigation_2 -> MyMealsFragment()
-                R.id.navigation_3 -> MealPlanFragment()
-                R.id.navigation_4 -> StatisticsFragment()
-                R.id.navigation_5 -> ProfileFragment()
+                R.id.navigation_1 -> allMealsFragment
+                R.id.navigation_2 -> myMealsFragment
+                R.id.navigation_3 -> mealPlanFragment
+                R.id.navigation_4 -> statisticsFragment
+                R.id.navigation_5 -> profileFragment
                 // Add more cases for additional fragments
-                else -> AllMealsFragment() // Default fragment
+                else -> allMealsFragment // Default fragment
             }
 
             replaceFragment(fragment)

@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
@@ -16,20 +18,21 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.topgastroguru.presentation.view.activities.MainActivity
 import com.example.topgastroguru.presentation.view.activities.recycler.adapter.MealAdapter
-import com.example.topgastroguru.presentation.view.activities.recycler.adapter.ParameterAdapter
 import com.example.topgastroguru.presentation.view.states.MealsState
 import com.example.topgastroguru.presentation.view.states.ParameterState
 import com.example.topgastroguru.presentation.view.viewmodels.MealDetailedViewModel
 import com.example.topgastroguru.presentation.view.viewmodels.ParameterViewModel
+import com.example.topgastroguru.util.SortType
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import timber.log.Timber
 
-class AllMealsFragment : Fragment(R.layout.fragment_all_meals) {
+class AllMealsFragment : Fragment(R.layout.fragment_all_meals), AdapterView.OnItemSelectedListener {
 
     private var _binding: FragmentAllMealsBinding? = null
     private val mealsViewModel: MealsContract.ViewModel by activityViewModel<AllMealsViewModel>()
     private val parameterViewModel: ParameterViewModel by activityViewModel<ParameterViewModel>()
     private val mealDetailedViewModel: MealDetailedViewModel by activityViewModel<MealDetailedViewModel>()
+    private val sortList = arrayOf(SortType.NONE, SortType.ABC, SortType.CALORIES)
     private val binding get() = _binding!!
 
     private lateinit var adapter: MealAdapter
@@ -83,8 +86,23 @@ class AllMealsFragment : Fragment(R.layout.fragment_all_meals) {
             (activity as MainActivity?)?.addFragmentHide(FilterFragment())
         }
 
-        binding.sortBtn.setOnClickListener {
+        ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.sort_array,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            // Specify the layout to use when the list of choices appears
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            // Apply the adapter to the spinner
+            binding.sortSpinner.adapter = adapter
         }
+        binding.sortSpinner.onItemSelectedListener = this
+
+
+
+//        binding.sortSpinner.setOnClickListener {
+//            (activity as MainActivity?)?.addFragmentHide(SortFragment())
+//        }
     }
 
     private fun initObservers() {
@@ -130,5 +148,13 @@ class AllMealsFragment : Fragment(R.layout.fragment_all_meals) {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        mealsViewModel.setSort(sortList[position])
+    }
+
+    override fun onNothingSelected(p0: AdapterView<*>?) {
+        TODO("Not yet implemented")
     }
 }

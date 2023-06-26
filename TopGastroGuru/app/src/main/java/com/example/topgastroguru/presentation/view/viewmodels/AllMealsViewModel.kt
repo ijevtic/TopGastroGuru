@@ -11,6 +11,7 @@ import com.example.topgastroguru.data.repositories.MealRepository
 import com.example.topgastroguru.data.sources.remote.converters.MealSimpleConverter
 import com.example.topgastroguru.presentation.contract.MealsContract
 import com.example.topgastroguru.presentation.view.states.MealsState
+import com.example.topgastroguru.util.SortType
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -25,6 +26,7 @@ class AllMealsViewModel(
     private val subscriptions = CompositeDisposable()
     override val mealsState: MutableLiveData<MealsState> = MutableLiveData()
     override val fullMealsState: MutableLiveData<List<MealSimple>> = MutableLiveData()
+    private var sortParameter: SortType? = null
     private var queryChar: Char? = null
     private var queryString: String? = null
     private var parameter: Parameter? = null
@@ -32,13 +34,6 @@ class AllMealsViewModel(
     private val publishSubject: PublishSubject<String> = PublishSubject.create()
 
     init {
-//        filterUpdate.observeForever { state ->
-//            if(!state)
-//                return@observeForever
-//
-//            filterMeals()
-//            filterUpdate.value = false
-//        }
     }
 
 
@@ -150,7 +145,7 @@ class AllMealsViewModel(
         } else {
             filteredMeals.addAll(fullMealsState.value!!)
         }
-        mealsState.value = MealsState.Success(filteredMeals)
+        setMealList(filteredMeals)
     }
 
     override fun updateSearchQuery(query: String) {
@@ -206,5 +201,28 @@ class AllMealsViewModel(
         }
         else
             fetchMealsByParameter()
+    }
+
+    override fun setSort(sortType: SortType) {
+        this.sortParameter = sortType
+        applyFilters()
+    }
+
+    private fun setMealList(unsortedList: List<MealSimple>) {
+        var meals : List<MealSimple>  = unsortedList
+
+        if(sortParameter != null) {
+            when(sortParameter) {
+                SortType.NONE -> {}
+                SortType.ABC -> {
+                    meals = meals.sortedBy { it.name }
+                }
+                SortType.CALORIES -> {
+                    //TODO sort by calories
+                }
+                else -> {}
+            }
+        }
+        mealsState.value = MealsState.Success(meals)
     }
 }

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import com.example.topgastroguru.data.models.MealSimple
 import com.example.topgastroguru.data.models.Parameter
 import com.example.topgastroguru.presentation.view.states.MealsState
+import com.example.topgastroguru.util.SortType
 
 interface MealsContract {
     interface ViewModel {
@@ -17,6 +18,7 @@ interface MealsContract {
         fun fetchMealsByFilter(filter: String)
         fun fetchMealsByName(name: String)
         fun setFilter(parameter: Parameter?)
+        fun setSort(sortType: SortType)
 
     }
 }
