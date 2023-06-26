@@ -9,12 +9,16 @@ import android.widget.Button
 import com.example.topgastroguru.R
 import com.example.topgastroguru.databinding.FragmentProfileBinding
 import com.example.topgastroguru.presentation.contract.MealDetaildContract
+import com.example.topgastroguru.presentation.contract.MealEntityContract
 import com.example.topgastroguru.presentation.view.viewmodels.MealDetailedViewModel
+import com.example.topgastroguru.presentation.view.viewmodels.MealEntityViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 class ProfileFragment : Fragment(R.layout.fragment_profile) {
     private val mealDetailedVM: MealDetaildContract.ViewModel by activityViewModel<MealDetailedViewModel>()
+    private val mealEntityViewModel: MealEntityContract.ViewModel by activityViewModel<MealEntityViewModel>()
 
     private var _binding: FragmentProfileBinding? = null
 
@@ -48,7 +52,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         testBT = binding.button
         testBT!!.setOnClickListener(View.OnClickListener {
             Timber.d("test")
-            mealDetailedVM.fetchMealById("52772")
+            mealEntityViewModel.getAllMeals()
         })
     }
 

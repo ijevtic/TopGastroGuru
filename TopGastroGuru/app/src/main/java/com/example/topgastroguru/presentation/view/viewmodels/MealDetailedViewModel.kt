@@ -21,18 +21,15 @@ class MealDetailedViewModel(
 
     //For remote data source
     override fun fetchMealById(id: String) {
-        Timber.e("uso")
         val subscription = mealRepository
             .fetchMealById(id)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
-                    Timber.e("fetch meal")
                     meal.value = MealDetailedConverter.convertToMealDetailed(it.meals[0])
                 },
                 {
-                    Timber.e("bacio gresku")
                     Timber.e(it)
                 }
             )

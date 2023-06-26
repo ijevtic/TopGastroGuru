@@ -7,11 +7,10 @@ interface MealEntityContract {
 
     interface ViewModel {
         val meal: LiveData<MealEntity>
-        val mealList: LiveData<List<MealEntity>>
+        val allMeals: LiveData<List<MealEntity>>
 
         fun getMealById(id: String)
         fun getAllMeals()
-        fun saveMealToDB(meal: MealEntity)
         fun deleteMealFromDB(meal: MealEntity)
         fun editMealInDB(meal: MealEntity)
     }

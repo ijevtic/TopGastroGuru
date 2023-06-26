@@ -13,6 +13,7 @@ import com.example.topgastroguru.presentation.view.viewmodels.AllMealsViewModel
 import com.example.topgastroguru.presentation.view.viewmodels.ParameterViewModel
 import com.example.topgastroguru.presentation.view.viewmodels.LoginViewModel
 import com.example.topgastroguru.presentation.view.viewmodels.MealDetailedViewModel
+import com.example.topgastroguru.presentation.view.viewmodels.MealEntityViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -21,6 +22,8 @@ val mealModule = module {
     viewModel { LoginViewModel(userRepository = get()) }
 
     viewModel { MealDetailedViewModel(mealRepository = get()) }
+
+    viewModel { MealEntityViewModel(mealRepository = get()) }
 
     viewModel { AllMealsViewModel(mealRepository = get()) }
 

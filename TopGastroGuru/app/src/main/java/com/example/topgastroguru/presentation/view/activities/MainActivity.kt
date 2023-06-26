@@ -13,11 +13,15 @@ import com.example.topgastroguru.presentation.view.viewmodels.ParameterViewModel
 import com.example.topgastroguru.presentation.view.viewmodels.MealDetailedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import androidx.lifecycle.Observer
+import com.example.topgastroguru.presentation.contract.MealEntityContract
 import com.example.topgastroguru.presentation.view.fragments.MealDetailedFragment
+import com.example.topgastroguru.presentation.view.viewmodels.MealEntityViewModel
+import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
 
     private val mealDetailedVM: MealDetaildContract.ViewModel by viewModel<MealDetailedViewModel>()
+    private val mealEntityViewModel: MealEntityContract.ViewModel by viewModel<MealEntityViewModel>()
     private val mealsViewModel: MealsContract.ViewModel by viewModel<AllMealsViewModel>()
     private val parameterViewModel: ParametersContract.ViewModel by viewModel<ParameterViewModel>()
 
@@ -44,6 +48,11 @@ class MainActivity : AppCompatActivity() {
         mealDetailedVM.meal.observe(this, Observer {
 //            Timber.e("MainActivity notified of meal change")
             addFragment(MealDetailedFragment())
+        })
+        //TODO: Add observer for mealEntityViewModel.meal
+        mealEntityViewModel.allMeals.observe(this, Observer {
+            Timber.e("MainActivity notified of change: AllMeals: $it")
+//            addFragment(MealDetailedFragment())
         })
     }
 
