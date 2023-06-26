@@ -10,21 +10,22 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.topgastroguru.R
 import com.example.topgastroguru.databinding.FragmentFilterMealsBinding
-import com.example.topgastroguru.presentation.view.activities.recycler.adapter.CategoryAdapter
-import com.example.topgastroguru.presentation.view.states.CategoriesState
-import com.example.topgastroguru.presentation.view.states.CategoryState
-import com.example.topgastroguru.presentation.view.viewmodels.CategoryViewModel
+import com.example.topgastroguru.presentation.view.activities.recycler.adapter.ParameterAdapter
+import com.example.topgastroguru.presentation.view.states.ParameterState
+import com.example.topgastroguru.presentation.view.states.ParametersState
+import com.example.topgastroguru.presentation.view.viewmodels.ParameterViewModel
+import com.example.topgastroguru.util.ParameterType
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import timber.log.Timber
 
 class FilterFragment : Fragment(R.layout.fragment_filter_meals) {
 
-    private val viewModel: CategoryViewModel by activityViewModel<CategoryViewModel>()
+    private val viewModel: ParameterViewModel by activityViewModel<ParameterViewModel>()
     private var _binding: FragmentFilterMealsBinding? = null
 
     private val binding get() = _binding!!
 
-    private lateinit var adapter: CategoryAdapter
+    private lateinit var adapter: ParameterAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,12 +56,30 @@ class FilterFragment : Fragment(R.layout.fragment_filter_meals) {
             initRecycler()
             initObservers()
             Timber.e("fetching categories")
-            viewModel.fetchCategories()
+            viewModel.fetchAll(ParameterType.CATEGORY)
+        }
+
+        binding.ingredientFilterBtn.setOnClickListener {
+            binding.filterBtns.visibility = View.GONE
+            binding.listRv.visibility = View.VISIBLE
+            initRecycler()
+            initObservers()
+            Timber.e("fetching ingredients")
+            viewModel.fetchAll(ParameterType.INGREDIENT)
+        }
+
+        binding.areaFilterBtn.setOnClickListener {
+            binding.filterBtns.visibility = View.GONE
+            binding.listRv.visibility = View.VISIBLE
+            initRecycler()
+            initObservers()
+            Timber.e("fetching areas")
+            viewModel.fetchAll(ParameterType.AREA)
         }
     }
 
     private fun initObservers() {
-        viewModel.categoriesState.observe(viewLifecycleOwner, Observer {
+        viewModel.parametersState.observe(viewLifecycleOwner, Observer {
             Timber.e("category state: $it")
             renderState(it);
         })
@@ -75,26 +94,24 @@ class FilterFragment : Fragment(R.layout.fragment_filter_meals) {
 
     private fun initRecycler() {
         binding.listRv.layoutManager = LinearLayoutManager(context)
-        adapter = CategoryAdapter { category ->
-            // Handle the item click event here
-            Timber.e("Clicked on category: ${category.strCategory}")
-            viewModel.selectedCategoryState.value = CategoryState.Selected(category)
+        adapter = ParameterAdapter { parameter ->
+            viewModel.selectedParameterState.value = ParameterState.Selected(parameter)
             requireActivity().supportFragmentManager.popBackStack()
         }
         binding.listRv.adapter = adapter
     }
 
-    private fun renderState(state: CategoriesState) {
+    private fun renderState(state: ParametersState) {
         when (state) {
-            is CategoriesState.Success -> {
+            is ParametersState.Success -> {
                 showLoadingState(false)
-                adapter.submitList(state.categories)
+                adapter.submitList(state.parameters)
             }
-            is CategoriesState.Error -> {
+            is ParametersState.Error -> {
                 showLoadingState(false)
                 adapter.submitList(listOf())
             }
-            is CategoriesState.Loading -> {
+            is ParametersState.Loading -> {
                 showLoadingState(true)
             }
         }

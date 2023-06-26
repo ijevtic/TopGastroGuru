@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.topgastroguru.presentation.view.activities.MainActivity
 import com.example.topgastroguru.presentation.view.activities.recycler.adapter.MealAdapter
 import com.example.topgastroguru.presentation.view.states.MealsState
+import com.example.topgastroguru.presentation.view.states.ParameterState
+import com.example.topgastroguru.presentation.view.viewmodels.ParameterViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import timber.log.Timber
 
@@ -24,6 +26,7 @@ class AllMealsFragment : Fragment(R.layout.fragment_all_meals) {
 
     private var _binding: FragmentAllMealsBinding? = null
     private val mealsViewModel: MealsContract.ViewModel by activityViewModel<AllMealsViewModel>()
+    private val parameterViewModel: ParameterViewModel by activityViewModel<ParameterViewModel>()
     private val binding get() = _binding!!
 
     private lateinit var adapter: MealAdapter
@@ -81,6 +84,12 @@ class AllMealsFragment : Fragment(R.layout.fragment_all_meals) {
         mealsViewModel.mealsState.observe(viewLifecycleOwner, Observer {
             Timber.e("desilo se")
             renderState(it);
+        })
+
+        parameterViewModel.selectedParameterState.observe(viewLifecycleOwner, Observer {
+            if(it is ParameterState.Selected) {
+                Toast.makeText(context, "Selected " + it.parameter.toString(), Toast.LENGTH_SHORT).show()
+            }
         })
 
     }

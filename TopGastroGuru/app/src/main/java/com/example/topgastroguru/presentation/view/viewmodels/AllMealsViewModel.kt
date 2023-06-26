@@ -2,7 +2,9 @@ package com.example.topgastroguru.presentation.view.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.topgastroguru.data.models.Category
 import com.example.topgastroguru.data.models.MealSimple
+import com.example.topgastroguru.data.models.Parameter
 import com.example.topgastroguru.data.repositories.MealRepository
 import com.example.topgastroguru.data.sources.remote.converters.MealSimpleConverter
 import com.example.topgastroguru.presentation.contract.MealsContract
@@ -21,7 +23,6 @@ class AllMealsViewModel(
     private val subscriptions = CompositeDisposable()
     override val mealsState: MutableLiveData<MealsState> = MutableLiveData()
     override val fullMealsState: MutableLiveData<List<MealSimple>> = MutableLiveData()
-//    private val filterUpdate: MutableLiveData<Boolean> = MutableLiveData()
     private var queryChar: Char? = null
     private var queryString: String? = null
 
@@ -124,5 +125,15 @@ class AllMealsViewModel(
 
     override fun fetchMealsByName(name: String) {
         TODO("Not yet implemented")
+    }
+
+    override fun setFilter(parameter: Parameter) {
+        when(parameter) {
+            is Category -> {
+                queryChar = null
+                queryString = null
+                applyFilters()
+            }
+        }
     }
 }

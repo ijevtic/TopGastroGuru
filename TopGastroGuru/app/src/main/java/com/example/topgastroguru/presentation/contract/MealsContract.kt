@@ -2,6 +2,7 @@ package com.example.topgastroguru.presentation.contract
 
 import androidx.lifecycle.LiveData
 import com.example.topgastroguru.data.models.MealSimple
+import com.example.topgastroguru.data.models.Parameter
 import com.example.topgastroguru.presentation.view.states.MealsState
 
 interface MealsContract {
@@ -15,6 +16,7 @@ interface MealsContract {
         fun updateSearchQuery(query: String)
         fun fetchMealsByFilter(filter: String)
         fun fetchMealsByName(name: String)
+        fun setFilter(parameter: Parameter)
 
     }
 }
