@@ -26,4 +26,6 @@
     <string name="filter_by_area">Filter by Area</string>
     <string name="filter_by_ingredient">Filter by ingredient</string>
     <string name="remove_filter">Remove filter</string>
+    <string name="search_by_tag">Search by Tag</string>
+    <string name="search_by_name">Search by Name</string>
 </resources>

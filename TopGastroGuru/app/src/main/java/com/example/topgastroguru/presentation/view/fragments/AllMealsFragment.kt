@@ -84,7 +84,7 @@ class AllMealsFragment : Fragment(R.layout.fragment_all_meals), AdapterView.OnIt
 
 
     private fun initListeners() {
-        binding.inputEt.doAfterTextChanged {
+        binding.nameSearch.doAfterTextChanged {
             mealsViewModel.updateSearchQuery(it.toString())
         }
 
@@ -133,6 +133,7 @@ class AllMealsFragment : Fragment(R.layout.fragment_all_meals), AdapterView.OnIt
     }
 
     private fun renderState(state: MealsState) {
+        binding.pageNumberTV.text = (currentPage+1).toString()
         when (state) {
             is MealsState.Success -> {
                 showLoadingState(false)
@@ -153,6 +154,7 @@ class AllMealsFragment : Fragment(R.layout.fragment_all_meals), AdapterView.OnIt
     }
 
     private fun renderAdapter() {
+        binding.pageNumberTV.text = (currentPage+1).toString()
         var state: MealsState = mealsViewModel.mealsState.value!!
 
         if(state is MealsState.Success) {

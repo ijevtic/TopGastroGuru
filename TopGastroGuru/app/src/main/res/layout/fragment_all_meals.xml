@@ -22,8 +22,9 @@
             android:layout_width="match_parent"
             android:weightSum="7">
             <EditText
-                android:id="@+id/inputEt"
-                android:layout_weight="3"
+                android:id="@+id/nameSearch"
+                android:hint="@string/search_by_name"
+                android:layout_weight="4"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
 
@@ -32,6 +33,29 @@
                 android:layout_marginEnd="16dp" />
             <Spinner
                 android:id="@+id/sortSpinner"
+                android:layout_weight="3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        <LinearLayout
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:weightSum="7">
+            <EditText
+                android:id="@+id/tagSearch"
+                android:hint="@string/search_by_tag"
+                android:layout_weight="3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+
+                android:layout_marginStart="16dp"
+                app:layout_goneMarginEnd="16dp"
+                android:layout_marginEnd="16dp" />
+            <Spinner
+                android:id="@+id/pageSpinner"
                 android:layout_weight="3"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content" />
@@ -47,18 +71,51 @@
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <Button
+            android:layout_height="50dp"
+            android:weightSum="22">
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/backwardBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Backward" />
-            <Button
-                android:id="@+id/forwardBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Forward" />
+                android:layout_width="0dp"
+                android:layout_height="46dp"
+                android:layout_marginHorizontal="5dp"
+                android:gravity="center"
+                android:layout_weight="3"
+                android:paddingLeft="25dp"
+                android:textAllCaps="true"
+                app:icon="@drawable/left_arrow"
+                app:iconGravity="textStart"
+                app:iconPadding="10dp"
+                tools:text="" />
 
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="6" />
+            <TextView
+                android:id="@+id/pageNumberTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:textSize="20sp"
+                android:textAlignment="center"
+                android:text="1" />
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="6" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/forwardBtn"
+                android:layout_width="0dp"
+                android:layout_height="46dp"
+                android:layout_marginHorizontal="5dp"
+                android:gravity="center"
+                android:layout_weight="3"
+                android:paddingLeft="25dp"
+                android:textAllCaps="true"
+                app:icon="@drawable/right_arrow"
+                app:iconGravity="textStart"
+                app:iconPadding="10dp"
+                tools:text="" />
         </LinearLayout>
     </LinearLayout>
 
