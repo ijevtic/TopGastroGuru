@@ -13,10 +13,12 @@ import com.example.topgastroguru.presentation.view.viewmodels.ParameterViewModel
 import com.example.topgastroguru.presentation.view.viewmodels.MealDetailedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import androidx.lifecycle.Observer
+import com.example.topgastroguru.data.models.entities.MealEntity
 import com.example.topgastroguru.presentation.contract.MealEntityContract
 import com.example.topgastroguru.presentation.view.fragments.MealDetailedFragment
 import com.example.topgastroguru.presentation.view.viewmodels.MealEntityViewModel
 import timber.log.Timber
+import java.util.Date
 
 class MainActivity : AppCompatActivity() {
 
@@ -41,7 +43,10 @@ class MainActivity : AppCompatActivity() {
         // Set the initial fragment
         replaceFragment(MainFragment())
         initObservers()
-//        mealDetailedVM.fetchMealById("52772")
+
+//        Test DB
+//        val meal= MealEntity("2", "Test", "img", "desc", "link", "prep", Date(1692613227), "type")
+//        mealEntityViewModel.insertMealInDB(meal)
     }
 
     private fun initObservers(){

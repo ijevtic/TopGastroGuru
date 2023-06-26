@@ -99,4 +99,9 @@ class MealEntityViewModel(
         // verovatno ne treba mealSimple posto on nema datum? mada mozda se datum ne menja
         TODO("Not yet implemented")
     }
+
+    override fun onCleared() {
+        super.onCleared()
+        subscriptions.clear()
+    }
 }
