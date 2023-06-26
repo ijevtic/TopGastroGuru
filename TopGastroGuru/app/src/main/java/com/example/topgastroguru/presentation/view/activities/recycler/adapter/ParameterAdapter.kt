@@ -16,11 +16,11 @@ class ParameterAdapter(private val onItemClick: (Parameter) -> Unit) : ListAdapt
     }
 
     override fun onBindViewHolder(holder: ParameterViewHolder, position: Int) {
-        val category = getItem(position)
-        holder.bind(category)
+        val parameter = getItem(position)
+        holder.bind(parameter)
 
         holder.itemView.setOnClickListener {
-            onItemClick(category)
+            onItemClick(parameter)
         }
     }
 

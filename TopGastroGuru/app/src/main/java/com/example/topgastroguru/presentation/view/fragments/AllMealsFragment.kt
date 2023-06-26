@@ -16,6 +16,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.topgastroguru.presentation.view.activities.MainActivity
 import com.example.topgastroguru.presentation.view.activities.recycler.adapter.MealAdapter
+import com.example.topgastroguru.presentation.view.activities.recycler.adapter.ParameterAdapter
 import com.example.topgastroguru.presentation.view.states.MealsState
 import com.example.topgastroguru.presentation.view.states.ParameterState
 import com.example.topgastroguru.presentation.view.viewmodels.ParameterViewModel
@@ -62,8 +63,11 @@ class AllMealsFragment : Fragment(R.layout.fragment_all_meals) {
     private fun initRecycler() {
         binding.listRv.layoutManager = LinearLayoutManager(context)
 
-
-        adapter = MealAdapter()
+        adapter = MealAdapter { meal ->
+            Toast.makeText(context, "clicked on meal: ${meal.name}", Toast.LENGTH_SHORT).show()
+//            viewModel.selectedParameterState.value = ParameterState.Selected(parameter)
+//            requireActivity().supportFragmentManager.popBackStack()
+        }
         binding.listRv.adapter = adapter
     }
 
