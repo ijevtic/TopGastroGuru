@@ -12,6 +12,8 @@ import com.example.topgastroguru.presentation.view.viewmodels.AllMealsViewModel
 import com.example.topgastroguru.presentation.view.viewmodels.ParameterViewModel
 import com.example.topgastroguru.presentation.view.viewmodels.MealDetailedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import androidx.lifecycle.Observer
+import com.example.topgastroguru.presentation.view.fragments.MealDetailedFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -39,10 +41,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initObservers(){
-//        mealDetailedVM.meal.observe(this, Observer {
+        mealDetailedVM.meal.observe(this, Observer {
 //            Timber.e("MainActivity notified of meal change")
-//            addFragment(MealDetailedFragment())
-//        })
+            addFragment(MealDetailedFragment())
+        })
     }
 
     fun addFragment(fragment: Fragment?) {

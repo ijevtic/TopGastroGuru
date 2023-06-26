@@ -19,6 +19,7 @@ import com.example.topgastroguru.presentation.view.activities.recycler.adapter.M
 import com.example.topgastroguru.presentation.view.activities.recycler.adapter.ParameterAdapter
 import com.example.topgastroguru.presentation.view.states.MealsState
 import com.example.topgastroguru.presentation.view.states.ParameterState
+import com.example.topgastroguru.presentation.view.viewmodels.MealDetailedViewModel
 import com.example.topgastroguru.presentation.view.viewmodels.ParameterViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import timber.log.Timber
@@ -28,6 +29,7 @@ class AllMealsFragment : Fragment(R.layout.fragment_all_meals) {
     private var _binding: FragmentAllMealsBinding? = null
     private val mealsViewModel: MealsContract.ViewModel by activityViewModel<AllMealsViewModel>()
     private val parameterViewModel: ParameterViewModel by activityViewModel<ParameterViewModel>()
+    private val mealDetailedViewModel: MealDetailedViewModel by activityViewModel<MealDetailedViewModel>()
     private val binding get() = _binding!!
 
     private lateinit var adapter: MealAdapter
@@ -64,7 +66,8 @@ class AllMealsFragment : Fragment(R.layout.fragment_all_meals) {
         binding.listRv.layoutManager = LinearLayoutManager(context)
 
         adapter = MealAdapter { meal ->
-            Toast.makeText(context, "clicked on meal: ${meal.name}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "clicked on meal: ${meal.id}", Toast.LENGTH_SHORT).show()
+            mealDetailedViewModel.fetchMealById(meal.id)
 //            viewModel.selectedParameterState.value = ParameterState.Selected(parameter)
 //            requireActivity().supportFragmentManager.popBackStack()
         }

@@ -25,6 +25,4 @@ interface MealService {
 
     @GET("filter.php?")
     fun getMealsByIngredient(@Query("i") ingredient: String): Observable<MealResponse>
-
-
 }
