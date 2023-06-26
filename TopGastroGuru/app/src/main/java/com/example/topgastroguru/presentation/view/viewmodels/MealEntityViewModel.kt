@@ -52,8 +52,20 @@ class MealEntityViewModel(
         subscriptions.add(subscription)
     }
 
-    override fun deleteMealFromDB(meal: MealEntity) {
-        TODO("Not yet implemented")
+    override fun deleteMealFromDB(id: String) {
+        val subscription = mealRepository
+            .deleteMealById(id)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    Timber.e("Meal deleted")
+                },
+                {
+                    Timber.e("error deleting meal")
+                }
+            )
+        subscriptions.add(subscription)
     }
 
     override fun editMealInDB(meal: MealEntity) {

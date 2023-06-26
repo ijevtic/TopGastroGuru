@@ -143,6 +143,7 @@ class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
             Toast.makeText(requireContext().applicationContext, "Meal saved!", Toast.LENGTH_SHORT).show()
 //            Timber.e("Picture saved with path: $imgPath")
             requireActivity().supportFragmentManager.popBackStack()
+            requireActivity().supportFragmentManager.popBackStack()
         }
 
         quitBT.setOnClickListener {

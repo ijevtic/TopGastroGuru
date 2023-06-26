@@ -12,7 +12,7 @@ interface MealRepository {
     fun getMealById(id: String): Observable<MealEntity>
     fun getAllMeals(): Observable<List<MealEntity>>
     fun insertMeal(meal: MealEntity): Completable
-    fun deleteMealById(id:String)
+    fun deleteMealById(id:String): Completable
     fun deleteAndInsertMeal(id: String, meal: MealEntity)
     fun fetchMealsByFirstLetter(letter: Char): Observable<MealResponse>
     fun fetchMealsByParameter(parameter: Parameter): Observable<MealResponse>

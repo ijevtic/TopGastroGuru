@@ -11,7 +11,7 @@ interface MealEntityContract {
 
         fun getMealById(id: String)
         fun getAllMeals()
-        fun deleteMealFromDB(meal: MealEntity)
+        fun deleteMealFromDB(id: String)
         fun editMealInDB(meal: MealEntity)
     }
 }

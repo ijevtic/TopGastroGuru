@@ -10,7 +10,6 @@ abstract class MealDao {
     @Insert( onConflict = OnConflictStrategy.REPLACE )
     abstract fun insert(entity: MealEntity): Completable
 
-
     @Query("SELECT * FROM meal WHERE id = :id")
     abstract fun getMealById(id: String): Observable<MealEntity>
 
@@ -18,7 +17,7 @@ abstract class MealDao {
     abstract fun getAllMeals(): Observable<List<MealEntity>>
 
     @Query("DELETE FROM meal WHERE id = :id")
-    abstract fun deleteById(id: String)
+    abstract fun deleteById(id: String): Completable
 
     @Transaction
     open fun deleteAndInsertMeal(id:String, meal:MealEntity) {
