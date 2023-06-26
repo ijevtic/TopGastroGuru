@@ -16,7 +16,6 @@ import com.example.topgastroguru.presentation.contract.MealsContract
 import com.example.topgastroguru.presentation.view.viewmodels.AllMealsViewModel
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.topgastroguru.data.models.MealSimple
 import com.example.topgastroguru.presentation.view.activities.MainActivity
 import com.example.topgastroguru.presentation.view.activities.recycler.adapter.MealAdapter
 import com.example.topgastroguru.presentation.view.states.MealsState
@@ -28,13 +27,14 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import timber.log.Timber
 import kotlin.math.min
 
-class AllMealsFragment : Fragment(R.layout.fragment_all_meals), AdapterView.OnItemSelectedListener {
+class AllMealsFragment : Fragment(R.layout.fragment_all_meals) {
 
     private var _binding: FragmentAllMealsBinding? = null
     private val mealsViewModel: MealsContract.ViewModel by activityViewModel<AllMealsViewModel>()
     private val parameterViewModel: ParameterViewModel by activityViewModel<ParameterViewModel>()
     private val mealDetailedViewModel: MealDetailedViewModel by activityViewModel<MealDetailedViewModel>()
     private val sortList = arrayOf(SortType.NONE, SortType.ABC, SortType.CALORIES)
+    private val paginationList = arrayOf(10, 10, 20, 50);
     private val binding get() = _binding!!
 
     private lateinit var adapter: MealAdapter
@@ -79,7 +79,7 @@ class AllMealsFragment : Fragment(R.layout.fragment_all_meals), AdapterView.OnIt
         binding.listRv.adapter = adapter
     }
 
-    private val pageSize = 10
+    private var pageSize = 10
     private var currentPage = 0
 
 
@@ -92,17 +92,49 @@ class AllMealsFragment : Fragment(R.layout.fragment_all_meals), AdapterView.OnIt
             (activity as MainActivity?)?.addFragmentHide(FilterFragment())
         }
 
-        ArrayAdapter.createFromResource(
+        val sortArray = resources.getStringArray(R.array.sort_array)
+
+        ArrayAdapter(
             requireContext(),
-            R.array.sort_array,
-            android.R.layout.simple_spinner_item
-        ).also { adapter ->
-            // Specify the layout to use when the list of choices appears
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            // Apply the adapter to the spinner
-            binding.sortSpinner.adapter = adapter
+            android.R.layout.simple_spinner_item,
+            sortArray
+        ).apply {
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            binding.sortSpinner.adapter = this
+            binding.sortSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    val selectedItem = getItem(position)
+                    mealsViewModel.setSort(sortList[position])
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    // Handle the case where no item is selected (optional)
+                }
+            }
         }
-        binding.sortSpinner.onItemSelectedListener = this
+
+        val paginationArray = resources.getStringArray(R.array.pagination_array)
+
+        ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            paginationArray
+        ).apply {
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            binding.pageSpinner.adapter = this
+            binding.pageSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    currentPage = 0
+                    pageSize = paginationList[position]
+                    renderAdapter()
+//                    mealsViewModel.setSort(sortList[position])
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    // Handle the case where no item is selected (optional)
+                }
+            }
+        }
 
         binding.backwardBtn.setOnClickListener {
             currentPage--
@@ -189,11 +221,11 @@ class AllMealsFragment : Fragment(R.layout.fragment_all_meals), AdapterView.OnIt
         _binding = null
     }
 
-    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        mealsViewModel.setSort(sortList[position])
-    }
-
-    override fun onNothingSelected(p0: AdapterView<*>?) {
-        TODO("Not yet implemented")
-    }
+//    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+//        mealsViewModel.setSort(sortList[position])
+//    }
+//
+//    override fun onNothingSelected(p0: AdapterView<*>?) {
+//        TODO("Not yet implemented")
+//    }
 }
