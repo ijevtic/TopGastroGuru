@@ -1,11 +1,33 @@
 package com.example.topgastroguru.data.sources.remote.converters
 
 import com.example.topgastroguru.data.models.MealSimple
+import com.example.topgastroguru.data.models.entities.MealEntity
 import com.example.topgastroguru.data.models.responses.Meal
 import com.example.topgastroguru.data.models.responses.MealResponse
 
 class MealSimpleConverter {
     companion object {
+
+        fun mapMealEntityToMealSimple(mealEntity: MealEntity): MealSimple {
+            return MealSimple(
+                id = mealEntity.id,
+                name = mealEntity.name,
+                link = mealEntity.link,
+                strCategory = mealEntity.category,
+                strArea = null,
+                strTags = null,
+                ingredients = hashMapOf()
+            )
+        }
+
+        fun mapListMealEntityToMealSimple(mealEntityList: List<MealEntity>): List<MealSimple> {
+            val returnList: MutableList<MealSimple> = mutableListOf()
+            for(mealEntity: MealEntity in mealEntityList) {
+                returnList += mapMealEntityToMealSimple(mealEntity)
+            }
+            return returnList
+        }
+
         fun mapMealResponseToMealSimple(mealResponse: MealResponse): List<MealSimple> {
             val returnList: MutableList<MealSimple> = mutableListOf()
 
