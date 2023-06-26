@@ -1,6 +1,5 @@
 package com.example.topgastroguru.presentation.view.viewmodels
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.topgastroguru.data.models.entities.MealEntity
@@ -70,5 +69,10 @@ class MealEntityViewModel(
 
     override fun editMealInDB(meal: MealEntity) {
         TODO("Not yet implemented")
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        subscriptions.clear()
     }
 }

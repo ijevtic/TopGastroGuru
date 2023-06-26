@@ -11,4 +11,10 @@
         android:layout_height="match_parent"
         android:text="Statistics Fragment" />
 
+    <Button
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="343dp"
+        android:text="Test" />
+
 </FrameLayout>

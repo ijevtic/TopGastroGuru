@@ -63,7 +63,19 @@ class MealDetailedViewModel(
     }
 
     override fun saveMealToDB(meal: MealEntity) {
-        mealRepository.insertMeal(meal)
+        val subscription = mealRepository
+            .insertMeal(meal)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    Timber.e("Meal inserted")
+                },
+                {
+                    Timber.e("error inserting meal")
+                }
+            )
+        subscriptions.add(subscription)
     }
 
     fun getMealDetailed(): MealDetailed? {

@@ -7,8 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.topgastroguru.R
 import com.example.topgastroguru.databinding.FragmentStatisticsBinding
+import com.example.topgastroguru.presentation.contract.MealEntityContract
+import com.example.topgastroguru.presentation.view.viewmodels.MealEntityViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
+    private val mealEntityViewModel: MealEntityContract.ViewModel by activityViewModel<MealEntityViewModel>()
 
     private var _binding: FragmentStatisticsBinding? = null
 
@@ -38,7 +43,10 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
     }
 
     private fun initUi() {
-
+//        Test DB
+        binding.button.setOnClickListener {
+            mealEntityViewModel.getAllMeals()
+        }
     }
 
     private fun initObservers() {
