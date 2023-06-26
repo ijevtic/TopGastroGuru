@@ -39,5 +39,12 @@ class Util {
 //            return false;
 //        }
         }
+
+        fun formatNameToSnakeLowerCase(name: String): String {
+            var formattedName = ""
+            formattedName = name.lowercase();
+            formattedName = formattedName.replace(" ", "_");
+            return formattedName
+        }
     }
 }

@@ -35,7 +35,7 @@ class FilterFragment : Fragment(R.layout.fragment_filter_meals) {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentFilterMealsBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -51,31 +51,29 @@ class FilterFragment : Fragment(R.layout.fragment_filter_meals) {
 
     private fun initUi() {
         binding.categoryFilterBtn.setOnClickListener {
-            binding.filterBtns.visibility = View.GONE
-            binding.listRv.visibility = View.VISIBLE
-            initRecycler()
-            initObservers()
+            setupFetchView()
             Timber.e("fetching categories")
             viewModel.fetchAll(ParameterType.CATEGORY)
         }
 
         binding.ingredientFilterBtn.setOnClickListener {
-            binding.filterBtns.visibility = View.GONE
-            binding.listRv.visibility = View.VISIBLE
-            initRecycler()
-            initObservers()
+            setupFetchView()
             Timber.e("fetching ingredients")
             viewModel.fetchAll(ParameterType.INGREDIENT)
         }
 
         binding.areaFilterBtn.setOnClickListener {
-            binding.filterBtns.visibility = View.GONE
-            binding.listRv.visibility = View.VISIBLE
-            initRecycler()
-            initObservers()
+            setupFetchView()
             Timber.e("fetching areas")
             viewModel.fetchAll(ParameterType.AREA)
         }
+    }
+
+    private fun setupFetchView() {
+        binding.filterBtns.visibility = View.GONE
+        binding.listRv.visibility = View.VISIBLE
+        initRecycler()
+        initObservers()
     }
 
     private fun initObservers() {

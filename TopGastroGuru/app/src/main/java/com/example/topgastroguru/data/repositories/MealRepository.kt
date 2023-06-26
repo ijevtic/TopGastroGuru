@@ -1,6 +1,7 @@
 package com.example.topgastroguru.data.repositories
 
 import com.example.topgastroguru.data.models.MealDetailed
+import com.example.topgastroguru.data.models.Parameter
 import com.example.topgastroguru.data.models.entities.MealEntity
 import com.example.topgastroguru.data.models.responses.MealResponse
 import io.reactivex.Completable
@@ -13,6 +14,7 @@ interface MealRepository {
     fun deleteMealById(id:String)
     fun deleteAndInsertMeal(id: String, meal: MealEntity)
     fun fetchMealsByFirstLetter(letter: Char): Observable<MealResponse>
+    fun fetchMealsByParameter(parameter: Parameter): Observable<MealResponse>
 
 //    fun fetchAll(): Observable<Resource<Unit>>
 //    fun getAll(): Observable<List<Movie>>

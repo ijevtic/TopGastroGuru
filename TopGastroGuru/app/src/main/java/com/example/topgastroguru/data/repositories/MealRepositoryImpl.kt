@@ -1,10 +1,17 @@
 package com.example.topgastroguru.data.repositories
 
+import com.example.topgastroguru.data.models.Area
+import com.example.topgastroguru.data.models.Category
+import com.example.topgastroguru.data.models.Ingredient
 import com.example.topgastroguru.data.models.MealDetailed
+import com.example.topgastroguru.data.models.Parameter
 import com.example.topgastroguru.data.models.entities.MealEntity
 import com.example.topgastroguru.data.models.responses.MealResponse
+import com.example.topgastroguru.data.models.responses.ParameterResponse
 import com.example.topgastroguru.data.sources.local.MealDao
 import com.example.topgastroguru.data.sources.remote.MealService
+import com.example.topgastroguru.util.ParameterType
+import com.example.topgastroguru.util.Util
 import io.reactivex.Completable
 import io.reactivex.Observable
 import timber.log.Timber
@@ -38,5 +45,30 @@ class MealRepositoryImpl(
     override fun fetchMealsByFirstLetter(letter: Char): Observable<MealResponse> {
         Timber.e("1 Fetching meals with first letter: $letter")
         return remoteDataSource.getMealsByFirstLetter(letter)
+    }
+
+    override fun fetchMealsByParameter(parameter: Parameter): Observable<MealResponse> {
+
+        return when (parameter) {
+            is Category -> fetchMealsByCategory(parameter)
+            is Area -> fetchMealsByArea(parameter)
+            is Ingredient -> fetchMealsByIngredient(parameter)
+            else -> {
+                Timber.e("Parameter type not supported")
+                Observable.empty()}
+        }
+    }
+
+
+    private fun fetchMealsByCategory(category: Category ): Observable<MealResponse> {
+        return remoteDataSource.getMealsByCategory(category.strCategory)
+    }
+
+    private fun fetchMealsByArea(area: Area): Observable<MealResponse> {
+        return remoteDataSource.getMealsByArea(area.strArea)
+    }
+
+    private fun fetchMealsByIngredient(ingredient: Ingredient): Observable<MealResponse> {
+        return remoteDataSource.getMealsByIngredient(Util.formatNameToSnakeLowerCase(ingredient.strIngredient))
     }
 }

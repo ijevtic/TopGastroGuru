@@ -2,7 +2,9 @@ package com.example.topgastroguru.presentation.view.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.topgastroguru.data.models.Area
 import com.example.topgastroguru.data.models.Category
+import com.example.topgastroguru.data.models.Ingredient
 import com.example.topgastroguru.data.models.MealSimple
 import com.example.topgastroguru.data.models.Parameter
 import com.example.topgastroguru.data.repositories.MealRepository
@@ -25,6 +27,7 @@ class AllMealsViewModel(
     override val fullMealsState: MutableLiveData<List<MealSimple>> = MutableLiveData()
     private var queryChar: Char? = null
     private var queryString: String? = null
+    private var parameter: Parameter? = null
 
     private val publishSubject: PublishSubject<String> = PublishSubject.create()
 
@@ -39,12 +42,19 @@ class AllMealsViewModel(
     }
 
 
-    private fun fetchMealsByFirstLetter() {
+    private fun fetchMeals() {
+        Timber.e("fetchMeals " + queryChar + " " + queryString + " " + parameter)
         if(queryChar == null) {
-            fullMealsState.value = listOf()
-            mealsState.value = MealsState.Success(listOf())
-            return
+            Timber.e("uso")
+            fetchMealsByParameter()
         }
+        else {
+            Timber.e("uso2")
+            fetchMealsByFirstLetter()
+        }
+    }
+
+    private fun fetchMealsByFirstLetter() {
         val subscription = mealRepository
             .fetchMealsByFirstLetter(queryChar!!)
             .map<MealsState> { MealsState.Success(MealSimpleConverter.mapMealResponseToMealSimple(it)) }
@@ -70,17 +80,72 @@ class AllMealsViewModel(
         subscriptions.add(subscription)
     }
 
+    private fun fetchMealsByParameter() {
+        if(parameter == null) {
+            fullMealsState.value = listOf()
+            mealsState.value = MealsState.Success(listOf())
+            return
+        }
+        val subscription = mealRepository
+            .fetchMealsByParameter(parameter!!)
+            .map<MealsState> { MealsState.Success(MealSimpleConverter.mapMealResponseToMealSimple(it)) }
+            .startWith(MealsState.Loading)
+            .onErrorReturn { MealsState.Error(it.message ?: "Unknown error occurred") }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { it ->
+                Timber.e("Response meals" + it.toString());
+                when (it) {
+                    is MealsState.Success -> {
+                        fullMealsState.value = it.meals
+                        applyFilters()
+                    }
+                    is MealsState.Loading -> {
+                        mealsState.value = MealsState.Loading
+                    }
+                    is MealsState.Error -> {
+                        mealsState.value = MealsState.Error(it.message)
+                    }
+                }
+            }
+        subscriptions.add(subscription)
+    }
+
+    // just filters without fetching
     private fun applyFilters() {
         if(fullMealsState.value == null) {
             mealsState.value = MealsState.Success(listOf())
             return
         }
         val filteredMeals = mutableListOf<MealSimple>()
-        if(queryString != null) {
+        if(queryChar != null) {
             for (meal in fullMealsState.value!!) {
-                if (meal.name!!.startsWith(queryString!!, true)) {
-                    filteredMeals.add(meal)
+                if (!meal.name!!.startsWith(queryString!!, true))
+                    continue
+
+//                Timber.e("Meal: " + meal.name + " " + meal.getIngredients());
+
+                val strCategoryExists = meal.javaClass.declaredFields.any { it.name == "strCategory" }
+
+                if(parameter != null && strCategoryExists) {
+                    when (parameter) {
+                        is Category -> {
+                            if (meal.strCategory != (parameter as Category).strCategory)
+                                continue
+                        }
+
+                        is Area -> {
+                            if (meal.strArea != (parameter as Area).strArea)
+                                continue
+                        }
+
+                        is Ingredient -> {
+                            if (!meal.ingredients.containsKey((parameter!! as Ingredient).strIngredient))
+                                continue
+                        }
+                    }
                 }
+                filteredMeals.add(meal)
             }
         } else {
             filteredMeals.addAll(fullMealsState.value!!)
@@ -90,6 +155,8 @@ class AllMealsViewModel(
 
     override fun updateSearchQuery(query: String) {
 
+        Timber.e("updateSearchQuery " + query)
+
         var changedString = false
 
         if (query != queryString) {
@@ -98,11 +165,15 @@ class AllMealsViewModel(
         }
 
         val updatedFirstLetter = setQueryChar(query)
+        Timber.e("timber " + queryChar + " " + queryString + " " + parameter)
+
 
         if(updatedFirstLetter)
-            fetchMealsByFirstLetter()
-        else if(changedString)
+            fetchMeals()
+
+        else if(changedString && query != null && query.isNotEmpty())
             applyFilters()
+
     }
 
     private fun setQueryChar(query: String): Boolean {
@@ -128,12 +199,12 @@ class AllMealsViewModel(
     }
 
     override fun setFilter(parameter: Parameter) {
-        when(parameter) {
-            is Category -> {
-                queryChar = null
-                queryString = null
-                applyFilters()
-            }
+        this.parameter = parameter
+
+        if(queryChar != null) {
+            applyFilters()
         }
+        else
+            fetchMealsByParameter()
     }
 }
