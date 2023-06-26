@@ -1,24 +1,21 @@
 package com.example.topgastroguru.presentation.view.fragments
 
+import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.fragment.app.Fragment
 import com.example.topgastroguru.R
 import com.example.topgastroguru.databinding.FragmentProfileBinding
 import com.example.topgastroguru.presentation.contract.MealDetaildContract
-import com.example.topgastroguru.presentation.contract.MealEntityContract
 import com.example.topgastroguru.presentation.view.viewmodels.MealDetailedViewModel
-import com.example.topgastroguru.presentation.view.viewmodels.MealEntityViewModel
+import com.example.topgastroguru.util.Constants
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import timber.log.Timber
 
 class ProfileFragment : Fragment(R.layout.fragment_profile) {
     private val mealDetailedVM: MealDetaildContract.ViewModel by activityViewModel<MealDetailedViewModel>()
-    private val mealEntityViewModel: MealEntityContract.ViewModel by activityViewModel<MealEntityViewModel>()
 
     private var _binding: FragmentProfileBinding? = null
 
@@ -49,10 +46,20 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     }
 
     private fun initUi() {
-        testBT = binding.button
-        testBT!!.setOnClickListener(View.OnClickListener {
-            Timber.d("test")
-            mealEntityViewModel.getAllMeals()
+
+        val sharedPreferences = requireActivity().getSharedPreferences(
+            requireActivity().packageName, Context.MODE_PRIVATE
+        )
+
+        binding.emailTv.text = sharedPreferences.getString(Constants.EMAIL, "")
+
+        binding.logoutButton.setOnClickListener(View.OnClickListener { v: View? ->
+
+            val editor = sharedPreferences.edit()
+            editor.remove(Constants.EMAIL)
+            editor.remove(Constants.IS_LOGGED_IN)
+            editor.apply()
+            requireActivity().finish()
         })
     }
 
