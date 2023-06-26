@@ -10,6 +10,7 @@ import io.reactivex.Observable
 interface MealRepository {
     fun fetchMealById(id: String): Observable<MealResponse>
     fun getMealById(id: String): Observable<MealEntity>
+    fun getAllMeals(): Observable<List<MealEntity>>
     fun insertMeal(meal: MealEntity): Completable
     fun deleteMealById(id:String)
     fun deleteAndInsertMeal(id: String, meal: MealEntity)

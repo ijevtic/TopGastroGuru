@@ -14,6 +14,9 @@ abstract class MealDao {
     @Query("SELECT * FROM meal WHERE id = :id")
     abstract fun getMealById(id: String): Observable<MealEntity>
 
+    @Query("SELECT * FROM meal")
+    abstract fun getAllMeals(): Observable<List<MealEntity>>
+
     @Query("DELETE FROM meal WHERE id = :id")
     abstract fun deleteById(id: String)
 

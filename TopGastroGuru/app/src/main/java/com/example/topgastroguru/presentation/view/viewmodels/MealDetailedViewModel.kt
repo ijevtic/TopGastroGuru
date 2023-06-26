@@ -66,7 +66,7 @@ class MealDetailedViewModel(
     }
 
     override fun saveMealToDB(meal: MealEntity) {
-        TODO("Not yet implemented")
+        mealRepository.insertMeal(meal)
     }
 
     fun getMealDetailed(): MealDetailed? {

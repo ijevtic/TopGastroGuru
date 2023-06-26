@@ -30,6 +30,10 @@ class MealRepositoryImpl(
         return localDataSource.getMealById(id)
     }
 
+    override fun getAllMeals(): Observable<List<MealEntity>> {
+        return localDataSource.getAllMeals()
+    }
+
     override fun insertMeal(meal: MealEntity): Completable {
         return localDataSource.insert(meal)
     }

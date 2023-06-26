@@ -31,6 +31,7 @@ import com.example.topgastroguru.util.Constants.Companion.REQUEST_IMAGE_CAPTURE
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import timber.log.Timber
 import java.io.File
+import java.io.FileOutputStream
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
@@ -43,6 +44,7 @@ class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
     private val binding get() = _binding!!
 
     private var date:Date= Date()
+    private var imgPath= "Not available"
 
     private lateinit var nameTV: TextView
     private lateinit var areaTV: TextView
@@ -120,44 +122,47 @@ class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
 //            Timber.e("Value of dateButton: "+ dateButton.text)
         }
 
-//        saveBT.setOnClickListener {
-//        //TODO: Save meal to database
-//            mealDetailedVM.getMealDetailed()?.ingredients?.let { it1 ->
-//                mealDetailedVM.getMealDetailed()?.id?.let { it2 ->
-//                    MealEntity(
-//                        name = nameTV.text.toString(),
+        //TODO: Save ingredients to database
+        saveBT.setOnClickListener {
+            mealDetailedVM.getMealDetailed()?.ingredients?.let { it1 ->
+                mealDetailedVM.getMealDetailed()?.id?.let { it2 ->
+                    MealEntity(
+                        name = nameTV.text.toString(),
 //                        ingredients = it1,
-//                        instructions = instructionsTV.text.toString(),
-//                        link = linkTV.text.toString(),
-//                        category = categoryTV.text.toString(),
-//                        type = typeET.text.toString(),
-//            //                    img = mealDetailedVM.getMealDetailed()?.mealThumb,
-//                        date = date,
-//                        id = it2
-//
-//                    )
-//                }
-//            }?.let { it2 -> mealDetailedVM.saveMealToDB(it2) }
-//
-//            Toast.makeText(requireContext().applicationContext, "Meal saved!", Toast.LENGTH_SHORT).show()
-//        }
+                        instructions = instructionsTV.text.toString(),
+                        link = linkTV.text.toString(),
+                        category = categoryTV.text.toString(),
+                        type = typeET.text.toString(),
+                        img = imgPath,
+                        date = date,
+                        id = it2
+                    )
+                }
+            }?.let { it2 -> mealDetailedVM.saveMealToDB(it2) }
 
-        quitBT.setOnClickListener(View.OnClickListener {
+            Toast.makeText(requireContext().applicationContext, "Meal saved!", Toast.LENGTH_SHORT).show()
+//            Timber.e("Picture saved with path: $imgPath")
+            requireActivity().supportFragmentManager.popBackStack()
+        }
+
+        quitBT.setOnClickListener {
             val builder = AlertDialog.Builder(requireContext())
             builder.setTitle("Quit")
             builder.setMessage("Are you sure you want to quit?")
             builder.setPositiveButton("Yes") { dialogInterface, which ->
-//                activity?.finish()
-//                does this work?
                 requireActivity().supportFragmentManager.popBackStack()
             }
             builder.setNegativeButton("No") { dialogInterface, which ->
-                Toast.makeText(requireContext().applicationContext, "Keep grinding", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext().applicationContext,
+                    "Keep grinding",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
             val alertDialog: AlertDialog = builder.create()
             alertDialog.setCancelable(false)
             alertDialog.show()
-        })
+        }
     }
 
 
@@ -197,11 +202,39 @@ class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
     }
 
     // Image capture
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+//            val imageBitmap = data?.extras?.get("data") as Bitmap
+//            photoIV.setImageBitmap(imageBitmap)
+//        }
+//    }
+
+//    ChatGpt generated
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             val imageBitmap = data?.extras?.get("data") as Bitmap
             photoIV.setImageBitmap(imageBitmap)
+
+            // Save the image to the local storage
+            val savedImagePath = saveImageToStorage(imageBitmap)
+
+            // Save the path to the image in the database
+//            mealDetailedVM.setMealImageFilePath(savedImagePath)
+            imgPath= savedImagePath
         }
+    }
+
+    private fun saveImageToStorage(image: Bitmap): String {
+        val storageDir = requireContext().getExternalFilesDir(null)
+        val imageFile = File.createTempFile(
+            "meal_image",
+            ".jpg",
+            storageDir
+        )
+        val outputStream = FileOutputStream(imageFile)
+        image.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+        outputStream.close()
+        return imageFile.absolutePath
     }
 
     //   Date Picker

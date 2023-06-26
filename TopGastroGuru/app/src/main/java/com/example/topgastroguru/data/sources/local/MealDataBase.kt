@@ -11,7 +11,7 @@ import com.example.topgastroguru.data.sources.local.converters.MapConverter
 @Database(
     entities = [UserEntity::class,
                 MealEntity::class],
-    version = 3,
+    version = 4,
     exportSchema = false)
 @TypeConverters(DateConverter::class)
 abstract class MealDataBase : RoomDatabase() {
