@@ -198,7 +198,7 @@ class AllMealsViewModel(
         TODO("Not yet implemented")
     }
 
-    override fun setFilter(parameter: Parameter) {
+    override fun setFilter(parameter: Parameter?) {
         this.parameter = parameter
 
         if(queryChar != null) {

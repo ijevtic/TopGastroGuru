@@ -50,6 +50,11 @@ class FilterFragment : Fragment(R.layout.fragment_filter_meals) {
     }
 
     private fun initUi() {
+
+        binding.removeFilterBtn.visibility = viewModel.selectedParameterState.value?.let {
+            if (it is ParameterState.Empty) View.GONE else View.VISIBLE
+        } ?: View.GONE
+
         binding.categoryFilterBtn.setOnClickListener {
             setupFetchView()
             Timber.e("fetching categories")
@@ -66,6 +71,11 @@ class FilterFragment : Fragment(R.layout.fragment_filter_meals) {
             setupFetchView()
             Timber.e("fetching areas")
             viewModel.fetchAll(ParameterType.AREA)
+        }
+
+        binding.removeFilterBtn.setOnClickListener {
+            viewModel.selectedParameterState.value = ParameterState.Empty
+            requireActivity().supportFragmentManager.popBackStack()
         }
     }
 

@@ -88,9 +88,10 @@ class AllMealsFragment : Fragment(R.layout.fragment_all_meals) {
 
         parameterViewModel.selectedParameterState.observe(viewLifecycleOwner, Observer {
             if(it is ParameterState.Selected) {
-//                Toast.makeText(context, "Selected " + it.parameter.toString(), Toast.LENGTH_SHORT).show()
                 mealsViewModel.setFilter(it.parameter)
             }
+            else
+                mealsViewModel.setFilter(null)
         })
 
     }

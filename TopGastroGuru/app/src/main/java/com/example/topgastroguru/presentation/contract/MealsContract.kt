@@ -16,7 +16,7 @@ interface MealsContract {
         fun updateSearchQuery(query: String)
         fun fetchMealsByFilter(filter: String)
         fun fetchMealsByName(name: String)
-        fun setFilter(parameter: Parameter)
+        fun setFilter(parameter: Parameter?)
 
     }
 }
