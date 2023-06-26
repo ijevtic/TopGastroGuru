@@ -16,6 +16,7 @@ import com.example.topgastroguru.presentation.contract.MealsContract
 import com.example.topgastroguru.presentation.view.viewmodels.AllMealsViewModel
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.topgastroguru.data.models.MealSimple
 import com.example.topgastroguru.presentation.view.activities.MainActivity
 import com.example.topgastroguru.presentation.view.activities.recycler.adapter.MealAdapter
 import com.example.topgastroguru.presentation.view.states.MealsState
@@ -25,6 +26,7 @@ import com.example.topgastroguru.presentation.view.viewmodels.ParameterViewModel
 import com.example.topgastroguru.util.SortType
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import timber.log.Timber
+import kotlin.math.min
 
 class AllMealsFragment : Fragment(R.layout.fragment_all_meals), AdapterView.OnItemSelectedListener {
 
@@ -77,6 +79,10 @@ class AllMealsFragment : Fragment(R.layout.fragment_all_meals), AdapterView.OnIt
         binding.listRv.adapter = adapter
     }
 
+    private val pageSize = 10
+    private var currentPage = 0
+
+
     private fun initListeners() {
         binding.inputEt.doAfterTextChanged {
             mealsViewModel.updateSearchQuery(it.toString())
@@ -98,17 +104,22 @@ class AllMealsFragment : Fragment(R.layout.fragment_all_meals), AdapterView.OnIt
         }
         binding.sortSpinner.onItemSelectedListener = this
 
+        binding.backwardBtn.setOnClickListener {
+            currentPage--
+            renderAdapter()
+        }
 
-
-//        binding.sortSpinner.setOnClickListener {
-//            (activity as MainActivity?)?.addFragmentHide(SortFragment())
-//        }
+        binding.forwardBtn.setOnClickListener {
+            currentPage++
+            renderAdapter()
+        }
     }
 
     private fun initObservers() {
         mealsViewModel.mealsState.observe(viewLifecycleOwner, Observer {
             Timber.e("desilo se")
-            renderState(it);
+            currentPage = 0
+            renderState(it)
         })
 
         parameterViewModel.selectedParameterState.observe(viewLifecycleOwner, Observer {
@@ -125,18 +136,44 @@ class AllMealsFragment : Fragment(R.layout.fragment_all_meals), AdapterView.OnIt
         when (state) {
             is MealsState.Success -> {
                 showLoadingState(false)
-                Toast.makeText(context, "Success " + state.meals.size, Toast.LENGTH_SHORT).show()
-                adapter.submitList(state.meals)
+//                adapter.submitList(state.meals)
+                renderAdapter()
             }
             is MealsState.Error -> {
                 showLoadingState(false)
+//                renderAdapter()
                 adapter.submitList(listOf())
-                Toast.makeText(context, "error torima" + state.message, Toast.LENGTH_SHORT).show()
+                binding.forwardBtn.isEnabled = false
+                binding.backwardBtn.isEnabled = false
             }
             is MealsState.Loading -> {
                 showLoadingState(true)
             }
         }
+    }
+
+    private fun renderAdapter() {
+        var state: MealsState = mealsViewModel.mealsState.value!!
+
+        if(state is MealsState.Success) {
+            val totalNum = state.meals.size
+            binding.forwardBtn.isEnabled = (currentPage+1)*pageSize < totalNum
+            binding.backwardBtn.isEnabled = currentPage > 0
+            if(state.meals.size == 0) {
+                adapter.submitList(listOf())
+                return
+            }
+            val minIndex = currentPage * pageSize
+            val maxIndex = min((currentPage + 1) * pageSize, state.meals.size)
+            adapter.submitList(
+                state.meals.subList(
+                    minIndex,
+                    maxIndex
+                )
+            )
+        }
+        else
+            adapter.submitList(listOf())
     }
 
     private fun showLoadingState(loading: Boolean) {
