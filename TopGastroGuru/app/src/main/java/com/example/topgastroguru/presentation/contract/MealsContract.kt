@@ -19,6 +19,7 @@ interface MealsContract {
         fun fetchMealsByName(name: String)
         fun setFilter(parameter: Parameter?)
         fun setSort(sortType: SortType)
+        fun setTag(tag: String)
 
     }
 }

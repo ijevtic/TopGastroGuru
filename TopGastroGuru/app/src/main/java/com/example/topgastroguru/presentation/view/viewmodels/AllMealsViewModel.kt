@@ -26,6 +26,7 @@ class AllMealsViewModel(
     private val subscriptions = CompositeDisposable()
     override val mealsState: MutableLiveData<MealsState> = MutableLiveData()
     override val fullMealsState: MutableLiveData<List<MealSimple>> = MutableLiveData()
+    private var tagQuery: String? = null
     private var sortParameter: SortType? = null
     private var queryChar: Char? = null
     private var queryString: String? = null
@@ -121,6 +122,7 @@ class AllMealsViewModel(
 //                Timber.e("Meal: " + meal.name + " " + meal.getIngredients());
 
                 val strCategoryExists = meal.javaClass.declaredFields.any { it.name == "strCategory" }
+                val strTagsExists = meal.javaClass.declaredFields.any { it.name == "strTags" }
 
                 if(parameter != null && strCategoryExists) {
                     when (parameter) {
@@ -139,6 +141,10 @@ class AllMealsViewModel(
                                 continue
                         }
                     }
+                }
+                if(strTagsExists && tagQuery != null && tagQuery != " ") {
+                    if(!meal.strTags!!.contains(tagQuery!!, true))
+                        continue
                 }
                 filteredMeals.add(meal)
             }
@@ -201,6 +207,11 @@ class AllMealsViewModel(
         }
         else
             fetchMealsByParameter()
+    }
+
+    override fun setTag(tag: String) {
+        this.tagQuery = tag
+        applyFilters()
     }
 
     override fun setSort(sortType: SortType) {

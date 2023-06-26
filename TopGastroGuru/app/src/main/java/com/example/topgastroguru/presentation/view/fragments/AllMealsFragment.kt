@@ -88,6 +88,10 @@ class AllMealsFragment : Fragment(R.layout.fragment_all_meals) {
             mealsViewModel.updateSearchQuery(it.toString())
         }
 
+        binding.tagSearch.doAfterTextChanged {
+            mealsViewModel.updateSearchQuery(it.toString())
+        }
+
         binding.filterBtn.setOnClickListener {
             (activity as MainActivity?)?.addFragmentHide(FilterFragment())
         }

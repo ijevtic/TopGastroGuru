@@ -6,6 +6,7 @@ class MealSimple(
     val link: String?,
     val strCategory: String?,
     val strArea: String?,
+    val strTags: String?,
     val ingredients: HashMap<String, String>
 ){
     override fun toString(): String {
