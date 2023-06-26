@@ -143,6 +143,7 @@ class ActivityLoginPage : AppCompatActivity() {
                     val sharedPreferences = getSharedPreferences(packageName, Context.MODE_PRIVATE)
                     val editor = sharedPreferences.edit()
                     editor.putBoolean(Constants.IS_LOGGED_IN, true)
+                    editor.putString(Constants.EMAIL, binding.email.text.toString())
                     editor.apply()
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
@@ -151,7 +152,7 @@ class ActivityLoginPage : AppCompatActivity() {
                     Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
                 }
                 is CheckCredentialsState.Loading -> {
-                    Toast.makeText(this, "Loading", Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(this, "Loading", Toast.LENGTH_SHORT).show()
                 }
             }
         })
