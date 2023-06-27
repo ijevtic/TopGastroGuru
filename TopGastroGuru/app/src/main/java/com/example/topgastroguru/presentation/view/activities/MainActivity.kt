@@ -54,11 +54,18 @@ class MainActivity : AppCompatActivity() {
 //            Timber.e("MainActivity notified of meal change")
             addFragment(MealDetailedFragment())
         })
-        //TODO: Add appropriate fragment
-//        mealEntityViewModel.meal.observe(this, Observer {
-//            Timber.e("MainActivity notified of change: AllMeals: $it")
+
+        mealEntityViewModel.meal.observe(this, Observer {
+            //TODO za doslica
+//            Timber.e("MainActivity notified of change: SelectedMeal: $it")
 //            addFragment(MealDetailedFragment())
-//        })
+        })
+
+        //TODO: Add observer for mealEntityViewModel.meal
+        mealEntityViewModel.allMeals.observe(this, Observer {
+            Timber.e("MainActivity notified of change: AllMeals: $it")
+//            addFragment(MealDetailedFragment())
+        })
     }
 
     fun addFragment(fragment: Fragment?) {

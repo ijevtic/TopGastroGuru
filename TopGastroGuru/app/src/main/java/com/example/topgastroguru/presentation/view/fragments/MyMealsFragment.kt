@@ -4,15 +4,34 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.topgastroguru.R
 import com.example.topgastroguru.databinding.FragmentMyMealsBinding
+import com.example.topgastroguru.presentation.contract.MealEntityContract
+import com.example.topgastroguru.presentation.contract.MealsContract
+import com.example.topgastroguru.presentation.view.activities.recycler.adapter.MealAdapter
+import com.example.topgastroguru.presentation.view.activities.recycler.adapter.SavedMealAdapter
+import com.example.topgastroguru.presentation.view.states.MealsState
+import com.example.topgastroguru.presentation.view.viewmodels.AllMealsViewModel
+import com.example.topgastroguru.presentation.view.viewmodels.MealEntityViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 class MyMealsFragment : Fragment(R.layout.fragment_my_meals) {
+
+
+    private val mealEntityViewModel: MealEntityContract.ViewModel by activityViewModel<MealEntityViewModel>()
 
     private var _binding: FragmentMyMealsBinding? = null
 
     private val binding get() = _binding!!
+
+    private lateinit var adapter: SavedMealAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,14 +54,54 @@ class MyMealsFragment : Fragment(R.layout.fragment_my_meals) {
     private fun init() {
         initUi()
         initObservers()
+
+        mealEntityViewModel.getAllMeals()
     }
 
     private fun initUi() {
+        initRecycler()
+    }
 
+    private fun initRecycler() {
+        binding.listRvSaved.layoutManager = LinearLayoutManager(context)
+
+        adapter = SavedMealAdapter { meal ->
+            Toast.makeText(context, "clicked on meal: ${meal.id}", Toast.LENGTH_SHORT).show()
+            mealEntityViewModel.getAllMeals()
+//            viewModel.selectedParameterState.value = ParameterState.Selected(parameter)
+//            requireActivity().supportFragmentManager.popBackStack()
+        }
+        binding.listRvSaved.adapter = adapter
     }
 
     private fun initObservers() {
+        mealEntityViewModel.allMeals.observe(viewLifecycleOwner, Observer {
+            Timber.d("observed all meals: $it")
+            when(it) {
+                is MealsState.Success -> {
+                    showLoadingState(false)
+                    adapter.submitList(it.meals)
+                }
+                is MealsState.Error -> {
+                    showLoadingState(false)
+                    adapter.submitList(emptyList())
+                }
+                is MealsState.Loading -> {
+                    showLoadingState(true)
+//                    adapter.submitList(emptyList())
+                }
+            }
+        })
 
+        binding.testFetchBtn.setOnClickListener {
+            mealEntityViewModel.getAllMeals()
+        }
+    }
+
+    private fun showLoadingState(loading: Boolean) {
+        //TODO hide others
+
+        binding.loadingPbSaved.isVisible = loading
     }
 
     override fun onDestroyView() {

@@ -21,6 +21,7 @@ import com.example.topgastroguru.R
 import com.example.topgastroguru.databinding.FragmentMealDetailedBinding
 import com.example.topgastroguru.presentation.view.activities.MainActivity
 import com.example.topgastroguru.presentation.view.viewmodels.MealDetailedViewModel
+import com.example.topgastroguru.presentation.view.viewmodels.MealEntityViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import timber.log.Timber
 import java.io.InputStream

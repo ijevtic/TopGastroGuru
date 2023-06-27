@@ -26,6 +26,7 @@ import com.example.topgastroguru.R
 import com.example.topgastroguru.data.models.entities.MealEntity
 import com.example.topgastroguru.databinding.FragmentSaveMealBinding
 import com.example.topgastroguru.presentation.view.viewmodels.MealDetailedViewModel
+import com.example.topgastroguru.presentation.view.viewmodels.MealEntityViewModel
 import com.example.topgastroguru.util.Constants
 import com.example.topgastroguru.util.Constants.Companion.REQUEST_IMAGE_CAPTURE
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -39,12 +40,14 @@ import java.util.Locale
 
 class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
     private val mealDetailedVM: MealDetailedViewModel by activityViewModel<MealDetailedViewModel>()
+    private val mealEntityViewModel: MealEntityViewModel by activityViewModel<MealEntityViewModel>()
+
 
     private var _binding: FragmentSaveMealBinding? = null
     private val binding get() = _binding!!
 
     private var date:Date= Date()
-    private var imgPath= "Not available"
+    private lateinit var imgPath: String
 
     private lateinit var nameTV: TextView
     private lateinit var areaTV: TextView
@@ -106,6 +109,7 @@ class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
             instructionsTV.setText(meal.instructions)
             categoryTV.setText(meal.category)
             linkTV.setText(meal.link)
+            imgPath = meal.mealThumb?:"Not available"
 
             DownloadImageFromInternet(photoIV).execute(meal.mealThumb)
         }
@@ -142,6 +146,10 @@ class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
 
             Toast.makeText(requireContext().applicationContext, "Meal saved!", Toast.LENGTH_SHORT).show()
 //            Timber.e("Picture saved with path: $imgPath")
+
+            //TODO mozda je prerano?
+            mealEntityViewModel.getAllMeals()
+
             requireActivity().supportFragmentManager.popBackStack()
             requireActivity().supportFragmentManager.popBackStack()
         }
