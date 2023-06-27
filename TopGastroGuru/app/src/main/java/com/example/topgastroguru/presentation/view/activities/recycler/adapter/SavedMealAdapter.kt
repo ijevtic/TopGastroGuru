@@ -5,11 +5,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.example.topgastroguru.data.models.MealDto
 import com.example.topgastroguru.databinding.LayoutItemSavedMealBinding
-import com.example.topgastroguru.presentation.view.activities.recycler.diff.SavedMealDiffCallback
+import com.example.topgastroguru.presentation.view.activities.recycler.diff.MealDtoDiffCallback
 import com.example.topgastroguru.presentation.view.activities.recycler.viewholder.SavedMealViewHolder
 
 class SavedMealAdapter(private val onItemClick: (MealDto) -> Unit, private val onDeleteClick: (MealDto) -> Unit) : ListAdapter<MealDto, SavedMealViewHolder>(
-    SavedMealDiffCallback()
+    MealDtoDiffCallback()
 ) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SavedMealViewHolder {
