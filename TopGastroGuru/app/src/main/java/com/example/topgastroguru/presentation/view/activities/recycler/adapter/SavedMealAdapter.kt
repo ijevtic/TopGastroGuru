@@ -8,7 +8,7 @@ import com.example.topgastroguru.databinding.LayoutItemSavedMealBinding
 import com.example.topgastroguru.presentation.view.activities.recycler.diff.SavedMealDiffCallback
 import com.example.topgastroguru.presentation.view.activities.recycler.viewholder.SavedMealViewHolder
 
-class SavedMealAdapter(private val onItemClick: (MealDto) -> Unit) : ListAdapter<MealDto, SavedMealViewHolder>(
+class SavedMealAdapter(private val onItemClick: (MealDto) -> Unit, private val onDeleteClick: (MealDto) -> Unit) : ListAdapter<MealDto, SavedMealViewHolder>(
     SavedMealDiffCallback()
 ) {
 
@@ -24,6 +24,8 @@ class SavedMealAdapter(private val onItemClick: (MealDto) -> Unit) : ListAdapter
         holder.itemView.setOnClickListener {
             onItemClick(meal)
         }
+
+        holder.bindDeleteButton(meal, onDeleteClick)
     }
 
 }

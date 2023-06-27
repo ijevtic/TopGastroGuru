@@ -23,6 +23,13 @@ class SavedMealViewHolder(private val itemBinding: LayoutItemSavedMealBinding) :
                 .load(meal.img)
                 .into(itemBinding.imgView)
         }
+        itemBinding.deleteBtn.setOnClickListener {
+            Timber.e("Delete button clicked")
+        }
     }
-
+    fun bindDeleteButton(meal: MealDto, onDeleteClick: (MealDto) -> Unit) {
+        itemBinding.deleteBtn.setOnClickListener {
+            onDeleteClick(meal)
+        }
+    }
 }

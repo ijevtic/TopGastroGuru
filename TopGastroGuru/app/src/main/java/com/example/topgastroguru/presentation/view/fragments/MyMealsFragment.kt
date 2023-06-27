@@ -1,5 +1,7 @@
 package com.example.topgastroguru.presentation.view.fragments
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,14 +14,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.topgastroguru.R
 import com.example.topgastroguru.databinding.FragmentMyMealsBinding
 import com.example.topgastroguru.presentation.contract.MealEntityContract
-import com.example.topgastroguru.presentation.contract.MealsContract
-import com.example.topgastroguru.presentation.view.activities.recycler.adapter.MealAdapter
 import com.example.topgastroguru.presentation.view.activities.recycler.adapter.SavedMealAdapter
 import com.example.topgastroguru.presentation.view.states.MealsState
-import com.example.topgastroguru.presentation.view.viewmodels.AllMealsViewModel
 import com.example.topgastroguru.presentation.view.viewmodels.MealEntityViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 class MyMealsFragment : Fragment(R.layout.fragment_my_meals) {
@@ -65,12 +63,31 @@ class MyMealsFragment : Fragment(R.layout.fragment_my_meals) {
     private fun initRecycler() {
         binding.listRvSaved.layoutManager = LinearLayoutManager(context)
 
-        adapter = SavedMealAdapter { meal ->
-            Toast.makeText(context, "clicked on meal: ${meal.id}", Toast.LENGTH_SHORT).show()
-            mealEntityViewModel.getAllMeals()
-//            viewModel.selectedParameterState.value = ParameterState.Selected(parameter)
-//            requireActivity().supportFragmentManager.popBackStack()
-        }
+        adapter = SavedMealAdapter ({ meal -> // on click
+            //TODO doslic ovde se otvara fragment za editovanje
+        },{ meal -> // on delete
+            val dialogClickListener =
+                DialogInterface.OnClickListener { dialog, which ->
+                    when (which) {
+                        DialogInterface.BUTTON_POSITIVE -> {
+                            mealEntityViewModel.deleteMealFromDB(meal.id)
+//                            recyclerViewModel.deleteTask(task.getId())
+//                            refreshView()
+                        }
+
+                        DialogInterface.BUTTON_NEGATIVE -> {}
+                    }
+                }
+
+            val builder = AlertDialog.Builder(
+                context
+            )
+            builder.setMessage(requireContext().getString(R.string.are_you_sure)).setPositiveButton(
+                requireContext().getString(R.string.yes), dialogClickListener
+            )
+                .setNegativeButton(requireContext().getString(R.string.no), dialogClickListener).show()
+        })
+
         binding.listRvSaved.adapter = adapter
     }
 

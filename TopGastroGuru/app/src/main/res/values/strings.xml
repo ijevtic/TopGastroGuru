@@ -41,4 +41,8 @@
     <string name="empty_fields">Empty fields!</string>
     <string name="passwords_cannot_be_the_name">Passwords cannot be the same!</string>
     <string name="give_up">Give up</string>
+
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>
