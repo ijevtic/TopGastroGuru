@@ -11,16 +11,15 @@ class MealDetailed(
     val link: String?,
     val ingredients :Map<String,String>? = null
 ){
-    private val calValue= "Not available"
-
-    private fun calculateCalValue(): Unit{
-        //TODO calculate amount of calories and add this method in init block
-        //or setter of ingredients
-    }
-
+    var calValue= 0.0
     override fun toString(): String {
-        return "MealDetailed(id='$id', name='$name', category='$category', area='$area', instructions='$instructions', mealThumb='$mealThumb', tags='$tags', link='$link', ingredients=$ingredients)"
+        return "MealDetailed(id='$id', name=$name, category=$category, area=$area, mealThumb=$mealThumb, tags=$tags, link=$link, ingredients=$ingredients, calValue='$calValue')"
     }
+
+    fun increaseCalValue(value: Double){
+        calValue += value
+    }
+
 
 }
 //idMeal": "52772",

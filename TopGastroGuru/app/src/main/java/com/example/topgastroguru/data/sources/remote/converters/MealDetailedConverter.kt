@@ -27,6 +27,8 @@ class MealDetailedConverter {
                 val ingredientValue = meal.getIngredientValue(i)
                 if (ingredientKey.isNotEmpty() && ingredientValue.isNotEmpty()) {
                     ingredients[ingredientKey] = ingredientValue
+                } else {
+
                 }
             }
             return ingredients
