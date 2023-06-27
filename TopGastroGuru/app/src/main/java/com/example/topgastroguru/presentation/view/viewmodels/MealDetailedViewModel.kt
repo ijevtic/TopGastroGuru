@@ -57,7 +57,7 @@ class MealDetailedViewModel(
                             )
                         subscriptions.add(subscription)
                     }
-                    Thread.sleep(5000)
+//                    Thread.sleep(5000)
                     Timber.e("Meal:\n" + meal.value.toString())
                 },
                 {

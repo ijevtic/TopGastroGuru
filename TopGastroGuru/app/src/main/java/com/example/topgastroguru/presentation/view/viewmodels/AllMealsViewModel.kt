@@ -10,6 +10,7 @@ import com.example.topgastroguru.data.models.Parameter
 import com.example.topgastroguru.data.repositories.MealRepository
 import com.example.topgastroguru.data.sources.remote.converters.MealSimpleConverter
 import com.example.topgastroguru.presentation.contract.MealsContract
+import com.example.topgastroguru.presentation.view.states.MealsApiState
 import com.example.topgastroguru.presentation.view.states.MealsState
 import com.example.topgastroguru.util.SortType
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -24,13 +25,14 @@ class AllMealsViewModel(
 ): ViewModel(), MealsContract.ViewModel {
 
     private val subscriptions = CompositeDisposable()
-    override val mealsState: MutableLiveData<MealsState> = MutableLiveData()
+    override val mealsState: MutableLiveData<MealsApiState> = MutableLiveData()
     override val fullMealsState: MutableLiveData<List<MealSimple>> = MutableLiveData()
     private var tagQuery: String? = null
     private var sortParameter: SortType? = null
     private var queryChar: Char? = null
     private var queryString: String? = null
     private var parameter: Parameter? = null
+    private var brojac = 0
 
     private val publishSubject: PublishSubject<String> = PublishSubject.create()
 
@@ -53,54 +55,66 @@ class AllMealsViewModel(
     private fun fetchMealsByFirstLetter() {
         val subscription = mealRepository
             .fetchMealsByFirstLetter(queryChar!!)
-            .map<MealsState> { MealsState.Success(MealSimpleConverter.mapMealResponseToMealSimple(it)) }
-            .startWith(MealsState.Loading)
-            .onErrorReturn { MealsState.Error(it.message ?: "Unknown error occurred") }
+            .map<MealsApiState> { MealsApiState.Success(MealSimpleConverter.mapMealResponseToMealSimple(it)) }
+            .startWith(MealsApiState.Loading)
+            .onErrorReturn { MealsApiState.Error(it.message ?: "Unknown error occurred") }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { it ->
-                Timber.e("Response meals" + it.toString());
+                Timber.e("Response meals" + it.toString())
                 when (it) {
-                    is MealsState.Success -> {
+                    is MealsApiState.Success -> {
                         fullMealsState.value = it.meals
+                        brojac++
+                        fetchCalories(brojac)
                         applyFilters()
                     }
-                    is MealsState.Loading -> {
-                        mealsState.value = MealsState.Loading
+                    is MealsApiState.Loading -> {
+                        mealsState.value = MealsApiState.Loading
                     }
-                    is MealsState.Error -> {
-                        mealsState.value = MealsState.Error(it.message)
+                    is MealsApiState.Error -> {
+                        mealsState.value = MealsApiState.Error(it.message)
                     }
                 }
             }
         subscriptions.add(subscription)
     }
 
+    private fun fetchCalories(initBrojac: Int) {
+        ///
+//        fullMealsStateCalories = listOf()
+
+//        if(initBrojac == brojac) {
+//            fullMealsState.value = //
+//            applyFilters()
+//        }
+    }
+
     private fun fetchMealsByParameter() {
         if(parameter == null) {
             fullMealsState.value = listOf()
-            mealsState.value = MealsState.Success(listOf())
+            mealsState.value = MealsApiState.Success(listOf())
             return
         }
         val subscription = mealRepository
             .fetchMealsByParameter(parameter!!)
-            .map<MealsState> { MealsState.Success(MealSimpleConverter.mapMealResponseToMealSimple(it)) }
-            .startWith(MealsState.Loading)
-            .onErrorReturn { MealsState.Error(it.message ?: "Unknown error occurred") }
+            .map<MealsApiState> { MealsApiState.Success(MealSimpleConverter.mapMealResponseToMealSimple(it)) }
+            .startWith(MealsApiState.Loading)
+            .onErrorReturn { MealsApiState.Error(it.message ?: "Unknown error occurred") }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { it ->
                 Timber.e("Response meals" + it.toString());
                 when (it) {
-                    is MealsState.Success -> {
+                    is MealsApiState.Success -> {
                         fullMealsState.value = it.meals
                         applyFilters()
                     }
-                    is MealsState.Loading -> {
-                        mealsState.value = MealsState.Loading
+                    is MealsApiState.Loading -> {
+                        mealsState.value = MealsApiState.Loading
                     }
-                    is MealsState.Error -> {
-                        mealsState.value = MealsState.Error(it.message)
+                    is MealsApiState.Error -> {
+                        mealsState.value = MealsApiState.Error(it.message)
                     }
                 }
             }
@@ -110,7 +124,7 @@ class AllMealsViewModel(
     // just filters without fetching
     private fun applyFilters() {
         if(fullMealsState.value == null) {
-            mealsState.value = MealsState.Success(listOf())
+            mealsState.value = MealsApiState.Success(listOf())
             return
         }
         val filteredMeals = mutableListOf<MealSimple>()
@@ -234,6 +248,6 @@ class AllMealsViewModel(
                 else -> {}
             }
         }
-        mealsState.value = MealsState.Success(meals)
+        mealsState.value = MealsApiState.Success(meals)
     }
 }

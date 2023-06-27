@@ -3,13 +3,14 @@ package com.example.topgastroguru.presentation.contract
 import androidx.lifecycle.LiveData
 import com.example.topgastroguru.data.models.MealSimple
 import com.example.topgastroguru.data.models.Parameter
+import com.example.topgastroguru.presentation.view.states.MealsApiState
 import com.example.topgastroguru.presentation.view.states.MealsState
 import com.example.topgastroguru.util.SortType
 
 interface MealsContract {
     interface ViewModel {
 
-        val mealsState: LiveData<MealsState>
+        val mealsState: LiveData<MealsApiState>
         val fullMealsState: LiveData<List<MealSimple>>
 
 //        val queryChar: LiveData<Char>
