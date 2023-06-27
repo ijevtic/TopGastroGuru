@@ -25,6 +25,7 @@ class MealDetailedViewModel(
     //For remote data source
     // Used for testing of calorie service for now
     override fun fetchMealById(id: String) {
+        Timber.e("GAAAS"+ meal.value)
         val subscription = mealRepository
             .fetchMealById(id)
             .subscribeOn(Schedulers.io())

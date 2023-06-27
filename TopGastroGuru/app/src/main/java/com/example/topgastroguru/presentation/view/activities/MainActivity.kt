@@ -15,6 +15,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import androidx.lifecycle.Observer
 import com.example.topgastroguru.data.models.entities.MealEntity
 import com.example.topgastroguru.presentation.contract.MealEntityContract
+import com.example.topgastroguru.presentation.view.fragments.EditMealFragment
 import com.example.topgastroguru.presentation.view.fragments.MealDetailedFragment
 import com.example.topgastroguru.presentation.view.viewmodels.MealEntityViewModel
 import timber.log.Timber
@@ -56,9 +57,8 @@ class MainActivity : AppCompatActivity() {
         })
 
         mealEntityViewModel.meal.observe(this, Observer {
-            //TODO za doslica
 //            Timber.e("MainActivity notified of change: SelectedMeal: $it")
-//            addFragment(MealDetailedFragment())
+            addFragment(EditMealFragment())
         })
 
         //TODO: Add observer for mealEntityViewModel.meal

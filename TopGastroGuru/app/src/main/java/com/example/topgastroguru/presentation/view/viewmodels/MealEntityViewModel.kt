@@ -35,7 +35,7 @@ class MealEntityViewModel(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { it ->
-                Timber.e("Response meals" + it.toString());
+//                Timber.e("Response meals" + it.toString())
                 when (it) {
                     is SingleMealState.Success -> {
                         meal.value = it
