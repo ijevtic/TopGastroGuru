@@ -18,6 +18,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.topgastroguru.presentation.view.activities.MainActivity
 import com.example.topgastroguru.presentation.view.activities.recycler.adapter.MealAdapter
+import com.example.topgastroguru.presentation.view.states.MealsApiState
 import com.example.topgastroguru.presentation.view.states.MealsState
 import com.example.topgastroguru.presentation.view.states.ParameterState
 import com.example.topgastroguru.presentation.view.viewmodels.MealDetailedViewModel
@@ -168,22 +169,22 @@ class AllMealsFragment : Fragment(R.layout.fragment_all_meals) {
 
     }
 
-    private fun renderState(state: MealsState) {
+    private fun renderState(state: MealsApiState) {
         binding.pageNumberTV.text = (currentPage+1).toString()
         when (state) {
-            is MealsState.Success -> {
+            is MealsApiState.Success -> {
                 showLoadingState(false)
 //                adapter.submitList(state.meals)
                 renderAdapter()
             }
-            is MealsState.Error -> {
+            is MealsApiState.Error -> {
                 showLoadingState(false)
 //                renderAdapter()
                 adapter.submitList(listOf())
                 binding.forwardBtn.isEnabled = false
                 binding.backwardBtn.isEnabled = false
             }
-            is MealsState.Loading -> {
+            is MealsApiState.Loading -> {
                 showLoadingState(true)
             }
         }
@@ -191,9 +192,9 @@ class AllMealsFragment : Fragment(R.layout.fragment_all_meals) {
 
     private fun renderAdapter() {
         binding.pageNumberTV.text = (currentPage+1).toString()
-        var state: MealsState = mealsViewModel.mealsState.value!!
+        var state: MealsApiState = mealsViewModel.mealsState.value!!
 
-        if(state is MealsState.Success) {
+        if(state is MealsApiState.Success) {
             val totalNum = state.meals.size
             binding.forwardBtn.isEnabled = (currentPage+1)*pageSize < totalNum
             binding.backwardBtn.isEnabled = currentPage > 0

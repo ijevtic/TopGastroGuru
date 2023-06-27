@@ -5,6 +5,7 @@ import com.example.topgastroguru.data.models.responses.Meal
 
 class MealDetailedConverter {
     companion object {
+
         fun convertToMealDetailed(meal: Meal): MealDetailed {
             val ingredients = mapIngredients(meal)
             return MealDetailed(

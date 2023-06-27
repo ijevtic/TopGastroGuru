@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.example.topgastroguru.data.models.MealSimple
 import com.example.topgastroguru.data.models.entities.MealEntity
 import com.example.topgastroguru.data.repositories.MealRepository
+import com.example.topgastroguru.data.sources.remote.converters.MealDtoConverter
 import com.example.topgastroguru.data.sources.remote.converters.MealSimpleConverter
 import com.example.topgastroguru.presentation.contract.MealEntityContract
 import com.example.topgastroguru.presentation.view.states.MealsState
@@ -28,7 +29,7 @@ class MealEntityViewModel(
     override fun getMealById(id: String) {
         val subscription = mealRepository
             .getMealById(id)
-            .map<SingleMealState> { SingleMealState.Success(MealSimpleConverter.mapMealEntityToMealSimple(it)) }
+            .map<SingleMealState> { SingleMealState.Success(MealDtoConverter.mapMealEntityToMealDto(it)) }
             .startWith(SingleMealState.Loading)
             .onErrorReturn { SingleMealState.Error(it.message ?: "Unknown error occurred") }
             .subscribeOn(Schedulers.io())
@@ -54,7 +55,7 @@ class MealEntityViewModel(
         Timber.e("init gas gas")
         val subscription = mealRepository
             .getAllMeals()
-            .map<MealsState> { MealsState.Success(MealSimpleConverter.mapListMealEntityToMealSimple(it)) }
+            .map<MealsState> { MealsState.Success(MealDtoConverter.mapListMealEntityToListMealDto(it)) }
             .startWith(MealsState.Loading)
             .onErrorReturn { MealsState.Error(it.message ?: "Unknown error occurred") }
             .subscribeOn(Schedulers.io())
