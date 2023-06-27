@@ -12,7 +12,7 @@ class MealSimpleConverter {
             return MealSimple(
                 id = mealEntity.id,
                 name = mealEntity.name,
-                link = mealEntity.link,
+                link = mealEntity.img,
                 strCategory = mealEntity.category,
                 strArea = null,
                 strTags = null,

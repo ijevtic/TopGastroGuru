@@ -47,7 +47,7 @@ class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
     private val binding get() = _binding!!
 
     private var date:Date= Date()
-    private var imgPath= "Not available"
+    private lateinit var imgPath: String
 
     private lateinit var nameTV: TextView
     private lateinit var areaTV: TextView
@@ -109,6 +109,7 @@ class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
             instructionsTV.setText(meal.instructions)
             categoryTV.setText(meal.category)
             linkTV.setText(meal.link)
+            imgPath = meal.mealThumb?:"Not available"
 
             DownloadImageFromInternet(photoIV).execute(meal.mealThumb)
         }
