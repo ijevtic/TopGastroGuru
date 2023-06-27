@@ -2,10 +2,8 @@ package com.example.topgastroguru.presentation.view.fragments
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.app.DatePickerDialog
-import android.app.DatePickerDialog.OnDateSetListener
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -24,29 +22,24 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.topgastroguru.R
 import com.example.topgastroguru.data.models.entities.MealEntity
-import com.example.topgastroguru.databinding.FragmentSaveMealBinding
+import com.example.topgastroguru.databinding.FragmentEditMealBinding
 import com.example.topgastroguru.presentation.view.viewmodels.MealDetailedViewModel
 import com.example.topgastroguru.presentation.view.viewmodels.MealEntityViewModel
 import com.example.topgastroguru.util.Constants
-import com.example.topgastroguru.util.Constants.Companion.REQUEST_IMAGE_CAPTURE
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
-import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.util.Calendar
 import java.util.Date
-import java.util.Locale
 
-
-class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
+class EditMealFragment: Fragment(R.layout.fragment_edit_meal) {
     private val mealDetailedVM: MealDetailedViewModel by activityViewModel<MealDetailedViewModel>()
     private val mealEntityViewModel: MealEntityViewModel by activityViewModel<MealEntityViewModel>()
 
-
-    private var _binding: FragmentSaveMealBinding? = null
+    private var _binding: FragmentEditMealBinding? = null
     private val binding get() = _binding!!
 
-    private var date:Date= Date()
+    private var date: Date = Date()
     private lateinit var imgPath: String
 
     private lateinit var nameTV: TextView
@@ -55,8 +48,8 @@ class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
     private lateinit var linkTV: TextView
     private lateinit var typeET: EditText
     private lateinit var categoryTV: TextView
-    private lateinit var saveBT: Button
-    private lateinit var quitBT: Button
+    private lateinit var editBT: Button
+    private lateinit var deleteBT: Button
     private lateinit var photoIV: ImageView
     private lateinit var photoBT: Button
     private lateinit var dateButton: Button
@@ -67,7 +60,7 @@ class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentSaveMealBinding.inflate(inflater, container, false)
+        _binding = FragmentEditMealBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -78,7 +71,7 @@ class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
 
     private fun init() {
         initUi()
-        initValues()
+//        initValues()
         initListeners()
         initObservers()
     }
@@ -93,32 +86,32 @@ class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
         linkTV = binding.link
         typeET = binding.type
         categoryTV = binding.category
-        saveBT = binding.save
-        quitBT = binding.quit
+        editBT = binding.edit
+        deleteBT = binding.delete
     }
 
-    private fun initValues(){
-        initDatePicker()
-
-        dateButton.setText(getTodaysDate())
-
-        var meal = mealDetailedVM.getMealDetailed()
-        if (meal != null) {
-            nameTV.setText(meal.name)
-            areaTV.setText(meal.area)
-            instructionsTV.setText(meal.instructions)
-            categoryTV.setText(meal.category)
-            linkTV.setText(meal.link)
-            imgPath = meal.mealThumb?:"Not available"
-
-            DownloadImageFromInternet(photoIV).execute(meal.mealThumb)
-        }
-    }
+//    private fun initValues(){
+//        initDatePicker()
+//
+//        dateButton.setText(getTodaysDate())
+//
+//        var meal = mealEntityViewModel.meal.value
+//        if (meal != null) {
+//            nameTV.setText(meal.name)
+//            areaTV.setText(meal.area)
+//            instructionsTV.setText(meal.instructions)
+//            categoryTV.setText(meal.category)
+//            linkTV.setText(meal.link)
+//            imgPath = meal.mealThumb?:"Not available"
+//
+//            DownloadImageFromInternet(photoIV).execute(meal.mealThumb)
+//        }
+//    }
 
     private fun initListeners(){
         photoBT.setOnClickListener(View.OnClickListener {
             val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE)
+            startActivityForResult(cameraIntent, Constants.REQUEST_IMAGE_CAPTURE)
         })
 
         binding.datePicker.setOnClickListener {
@@ -127,7 +120,7 @@ class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
         }
 
         //TODO: Save ingredients to database
-        saveBT.setOnClickListener {
+        editBT.setOnClickListener {
             mealDetailedVM.getMealDetailed()?.ingredients?.let { it1 ->
                 mealDetailedVM.getMealDetailed()?.id?.let { it2 ->
                     MealEntity(
@@ -154,7 +147,7 @@ class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
             requireActivity().supportFragmentManager.popBackStack()
         }
 
-        quitBT.setOnClickListener {
+        deleteBT.setOnClickListener {
             val builder = AlertDialog.Builder(requireContext())
             builder.setTitle("Quit")
             builder.setMessage("Are you sure you want to quit?")
@@ -173,8 +166,6 @@ class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
             alertDialog.show()
         }
     }
-
-
 
     private fun initObservers() {
 
@@ -212,7 +203,7 @@ class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
 
     // Image capture
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+        if (requestCode == Constants.REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
             val imageBitmap = data?.extras?.get("data") as Bitmap
             photoIV.setImageBitmap(imageBitmap)
 
@@ -251,10 +242,10 @@ class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
 
     private fun initDatePicker() {
         val dateSetListener =
-            OnDateSetListener { datePicker, year, month, day ->
+            DatePickerDialog.OnDateSetListener { datePicker, year, month, day ->
                 var month = month
                 month = month + 1
-                date= Date(year, month, day)
+                date = Date(year, month, day)
                 val date = makeDateString(day, month, year)
                 dateButton.text = date
             }
