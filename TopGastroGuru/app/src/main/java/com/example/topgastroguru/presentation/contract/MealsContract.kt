@@ -10,8 +10,12 @@ import com.example.topgastroguru.util.SortType
 interface MealsContract {
     interface ViewModel {
 
+        val initialRender: LiveData<Boolean>
+        val loadedMealsData: LiveData<Boolean>
         val mealsState: LiveData<MealsApiState>
         val fullMealsState: LiveData<List<MealSimple>>
+        val queryString: LiveData<String>
+        val tagQuery: LiveData<String>
 
 //        val queryChar: LiveData<Char>
 
@@ -21,6 +25,8 @@ interface MealsContract {
         fun setFilter(parameter: Parameter?)
         fun setSort(sortType: SortType)
         fun setTag(tag: String)
+        fun setInitialRender(value: Boolean)
+        fun setLoadedMealsData(value: Boolean)
 
     }
 }
