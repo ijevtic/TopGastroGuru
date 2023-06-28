@@ -1,7 +1,7 @@
 package com.example.topgastroguru.presentation.view.adapters
 
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.topgastroguru.presentation.view.fragments.TabChooseMealsFragment
 import com.example.topgastroguru.presentation.view.fragments.TabPlanOverviewFragment
@@ -37,4 +37,9 @@ class PagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
         fragmentList[position] = newFragment
         return newFragment
     }
+
+//    override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
+//        fragmentList[position] = null
+//        super.destroyItem(container, position, `object`)
+//    }
 }

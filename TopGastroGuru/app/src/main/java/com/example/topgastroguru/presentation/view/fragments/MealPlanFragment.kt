@@ -1,7 +1,5 @@
 package com.example.topgastroguru.presentation.view.fragments
 
-import android.app.AlertDialog
-import android.content.DialogInterface
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -38,18 +36,22 @@ class MealPlanFragment : Fragment(R.layout.fragment_meal_plan) {
         tabLayout = binding.tabLayout
         viewPager = binding.viewPager
 
-        // Initialize the ViewPager2 adapter
-        val adapter = PagerAdapter(this)
-        viewPager.adapter = adapter
+        viewPager.offscreenPageLimit = ViewPager2.OFFSCREEN_PAGE_LIMIT_DEFAULT
+//
+//        // Initialize the ViewPager2 adapter
+        if (viewPager.adapter == null) {
+            val adapter = PagerAdapter(this)
+            viewPager.adapter = adapter
 
-        // Connect the TabLayout with the ViewPager2
-        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            tab.text = when (position) {
-                0 -> "Tab 1"
-                1 -> "Tab 2"
-                else -> ""
-            }
-        }.attach()
+            // Connect the TabLayout with the ViewPager2
+            TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+                tab.text = when (position) {
+                    0 -> "Tab 1"
+                    1 -> "Tab 2"
+                    else -> ""
+                }
+            }.attach()
+        }
 
         return binding.root
     }
@@ -66,4 +68,18 @@ class MealPlanFragment : Fragment(R.layout.fragment_meal_plan) {
         super.onDestroyView()
         _binding = null
     }
+
+//    class PagerAdapter2(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+//        override fun getItem(position: Int): Fragment {
+//            return when (position) {
+//                0 -> TabChooseMealsFragment()
+//                1 -> TabPlanOverviewFragment()
+//                else -> throw IllegalArgumentException("Invalid tab position")
+//            }
+//        }
+//
+//        override fun getCount(): Int {
+//            return 2
+//        }
+//    }
 }

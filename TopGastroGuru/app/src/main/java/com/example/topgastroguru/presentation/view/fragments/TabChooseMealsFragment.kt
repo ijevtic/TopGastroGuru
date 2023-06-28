@@ -15,16 +15,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.topgastroguru.R
 import com.example.topgastroguru.databinding.FragmentChooseMealsBinding
 import com.example.topgastroguru.presentation.contract.MealPlanContract
+import com.example.topgastroguru.presentation.contract.PlanOverViewContract
 import com.example.topgastroguru.presentation.view.activities.recycler.adapter.PickMealAdapter
 import com.example.topgastroguru.presentation.view.states.MealsState
 import com.example.topgastroguru.presentation.view.viewmodels.MealPlanViewModel
+import com.example.topgastroguru.presentation.view.viewmodels.PlanOverviewViewModel
 import com.example.topgastroguru.util.MealType
+import com.example.topgastroguru.util.Weekday
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import timber.log.Timber
 
 class TabChooseMealsFragment : Fragment(R.layout.fragment_choose_meals) {
 
     private val mealPlanViewModel: MealPlanContract.ViewModel by activityViewModel<MealPlanViewModel>()
+    private val planOverviewViewModel: PlanOverViewContract.ViewModel by activityViewModel<PlanOverviewViewModel>()
 
     private lateinit var adapterOnline: PickMealAdapter
     private lateinit var adapterLocal: PickMealAdapter
@@ -83,10 +87,16 @@ class TabChooseMealsFragment : Fragment(R.layout.fragment_choose_meals) {
                     // Handle positive button click
                     // Get the selected weekdays from the checkboxes
                     val mondayChecked = dialogView.findViewById<CheckBox>(R.id.checkbox_monday).isChecked
+                    if(mondayChecked)
+                        planOverviewViewModel.addMealToDay(meal, Weekday.MONDAY)
                     val tuesdayChecked = dialogView.findViewById<CheckBox>(R.id.checkbox_tuesday).isChecked
+                    if (tuesdayChecked)
+                        planOverviewViewModel.addMealToDay(meal, Weekday.TUESDAY)
                     val wednesdayChecked = dialogView.findViewById<CheckBox>(R.id.checkbox_wednesday).isChecked
                     val thursdayChecked = dialogView.findViewById<CheckBox>(R.id.checkbox_thursday).isChecked
                     val fridayChecked = dialogView.findViewById<CheckBox>(R.id.checkbox_friday).isChecked
+                    if (fridayChecked)
+                        planOverviewViewModel.addMealToDay(meal, Weekday.FRIDAY)
                     val saturdayChecked = dialogView.findViewById<CheckBox>(R.id.checkbox_saturday).isChecked
                     val sundayChecked = dialogView.findViewById<CheckBox>(R.id.checkbox_sunday).isChecked
                 }
@@ -99,7 +109,31 @@ class TabChooseMealsFragment : Fragment(R.layout.fragment_choose_meals) {
 
         adapterLocal = PickMealAdapter ({ meal -> // on click
         },{ meal -> // on pick
-            Toast.makeText(context, "Meal picked local " + meal.name, Toast.LENGTH_SHORT).show()
+            val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_weekday_selection, null)
+            val builder = AlertDialog.Builder(context)
+            builder.setView(dialogView)
+                .setPositiveButton("OK") { dialog, which ->
+                    // Handle positive button click
+                    // Get the selected weekdays from the checkboxes
+                    val mondayChecked = dialogView.findViewById<CheckBox>(R.id.checkbox_monday).isChecked
+                    if(mondayChecked)
+                        planOverviewViewModel.addMealToDay(meal, Weekday.MONDAY)
+                    val tuesdayChecked = dialogView.findViewById<CheckBox>(R.id.checkbox_tuesday).isChecked
+                    if (tuesdayChecked)
+                        planOverviewViewModel.addMealToDay(meal, Weekday.TUESDAY)
+                    val wednesdayChecked = dialogView.findViewById<CheckBox>(R.id.checkbox_wednesday).isChecked
+                    val thursdayChecked = dialogView.findViewById<CheckBox>(R.id.checkbox_thursday).isChecked
+                    val fridayChecked = dialogView.findViewById<CheckBox>(R.id.checkbox_friday).isChecked
+                    if (fridayChecked)
+                        planOverviewViewModel.addMealToDay(meal, Weekday.FRIDAY)
+                    val saturdayChecked = dialogView.findViewById<CheckBox>(R.id.checkbox_saturday).isChecked
+                    val sundayChecked = dialogView.findViewById<CheckBox>(R.id.checkbox_sunday).isChecked
+                }
+                .setNegativeButton("Cancel") { dialog, which ->
+                    // Handle negative button click or simply dismiss the dialog
+                    dialog.dismiss()
+                }
+            builder.create().show()
         })
 
         binding.listRvOnline.adapter = adapterOnline

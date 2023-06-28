@@ -45,7 +45,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             val fragment: Fragment = when (item.itemId) {
                 R.id.navigation_1 -> allMealsFragment
                 R.id.navigation_2 -> myMealsFragment
-                R.id.navigation_3 -> mealPlanFragment
+                R.id.navigation_3 -> MealPlanFragment()
                 R.id.navigation_4 -> statisticsFragment
                 R.id.navigation_5 -> profileFragment
                 // Add more cases for additional fragments

@@ -16,10 +16,12 @@ import androidx.lifecycle.Observer
 import com.example.topgastroguru.data.models.entities.MealEntity
 import com.example.topgastroguru.presentation.contract.MealEntityContract
 import com.example.topgastroguru.presentation.contract.MealPlanContract
+import com.example.topgastroguru.presentation.contract.PlanOverViewContract
 import com.example.topgastroguru.presentation.view.fragments.EditMealFragment
 import com.example.topgastroguru.presentation.view.fragments.MealDetailedFragment
 import com.example.topgastroguru.presentation.view.viewmodels.MealEntityViewModel
 import com.example.topgastroguru.presentation.view.viewmodels.MealPlanViewModel
+import com.example.topgastroguru.presentation.view.viewmodels.PlanOverviewViewModel
 import timber.log.Timber
 import java.util.Date
 
@@ -30,6 +32,7 @@ class MainActivity : AppCompatActivity() {
     private val mealsViewModel: MealsContract.ViewModel by viewModel<AllMealsViewModel>()
     private val parameterViewModel: ParametersContract.ViewModel by viewModel<ParameterViewModel>()
     private val mealPlanViewModel: MealPlanContract.ViewModel by viewModel<MealPlanViewModel>()
+    private val planOverviewViewModel: PlanOverViewContract.ViewModel by viewModel<PlanOverviewViewModel>()
 
     private lateinit var binding: ActivityMainBinding
 
