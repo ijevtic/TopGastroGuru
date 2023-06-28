@@ -8,5 +8,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <color name="darkerP">#526869</color>
+
+
     <color name="red_error">#FF0000</color>
 </resources>

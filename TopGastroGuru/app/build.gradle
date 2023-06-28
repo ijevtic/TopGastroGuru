@@ -44,6 +44,15 @@ android {
     }
 }
 
+android {
+    packagingOptions {
+        resources {
+            exclude 'META-INF/NOTICE.md'
+            exclude 'META-INF/LICENSE.md'
+        }
+    }
+}
+
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.10.1'
@@ -114,7 +123,7 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.12.0'
     kapt 'com.github.bumptech.glide:compiler:4.12.0'
 
-    // Chart
-    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+    implementation 'com.sun.mail:android-mail:1.6.6'
+    implementation 'com.sun.mail:android-activation:1.6.6'
 
 }

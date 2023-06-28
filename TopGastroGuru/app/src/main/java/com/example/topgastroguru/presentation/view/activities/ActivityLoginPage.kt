@@ -36,7 +36,8 @@ class ActivityLoginPage : AppCompatActivity() {
 
         // check if the user is already logged in
         val sharedPreferences = getSharedPreferences(packageName, Context.MODE_PRIVATE)
-
+        val editor = sharedPreferences.edit()
+        editor.putFloat(Constants.DAILY_CALORIES, 2000f)
         if (sharedPreferences.contains(Constants.IS_LOGGED_IN) && sharedPreferences.getBoolean(Constants.IS_LOGGED_IN, true)) {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
@@ -55,7 +56,7 @@ class ActivityLoginPage : AppCompatActivity() {
         initObservers()
 //        val userToAdd = User(
 //            id = "1",
-//            email = "ivan@ivan.com",
+//            email = "ivanjevtic501@gmail.com",
 //            username = "ivan",
 //            password = "ivan",
 //            fullName = "ivan ivan"

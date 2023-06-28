@@ -67,6 +67,8 @@
                 android:gravity="center_vertical|start"
                 android:drawableLeft="@drawable/ic_filter_icon"
                 android:paddingLeft="15dp"
+                android:background="@color/white"
+                android:textColor="@color/white"
                 android:layout_marginRight="5dp"/>
         </LinearLayout>
         <LinearLayout
