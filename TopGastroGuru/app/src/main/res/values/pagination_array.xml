@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="pagination_array">
-        <item>Default</item>
+        <item>Default pgn</item>
         <item>10</item>
         <item>20</item>
         <item>50</item>

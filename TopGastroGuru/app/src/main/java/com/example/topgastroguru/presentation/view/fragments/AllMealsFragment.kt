@@ -1,6 +1,7 @@
 package com.example.topgastroguru.presentation.view.fragments
 
 import android.os.Bundle
+import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
 import com.example.topgastroguru.R
 import com.example.topgastroguru.databinding.FragmentAllMealsBinding
 import com.example.topgastroguru.presentation.contract.MealsContract
@@ -18,11 +20,14 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.topgastroguru.presentation.view.activities.MainActivity
 import com.example.topgastroguru.presentation.view.activities.recycler.adapter.MealAdapter
+import com.example.topgastroguru.presentation.view.activities.recycler.adapter.ParameterAdapter
 import com.example.topgastroguru.presentation.view.states.MealsApiState
 import com.example.topgastroguru.presentation.view.states.MealsState
 import com.example.topgastroguru.presentation.view.states.ParameterState
+import com.example.topgastroguru.presentation.view.states.ParametersState
 import com.example.topgastroguru.presentation.view.viewmodels.MealDetailedViewModel
 import com.example.topgastroguru.presentation.view.viewmodels.ParameterViewModel
+import com.example.topgastroguru.util.ParameterType
 import com.example.topgastroguru.util.SortType
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import timber.log.Timber
@@ -39,6 +44,7 @@ class AllMealsFragment : Fragment(R.layout.fragment_all_meals) {
     private val binding get() = _binding!!
 
     private lateinit var adapter: MealAdapter
+    private lateinit var categoryAdapter: ParameterAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,20 +70,57 @@ class AllMealsFragment : Fragment(R.layout.fragment_all_meals) {
     }
 
     private fun initUi() {
-        initRecycler()
+
+        binding.nameSearch.text = mealsViewModel.queryString.value!!.toEditable()
+        binding.tagSearch.text = mealsViewModel.tagQuery.value!!.toEditable()
+
+        if (mealsViewModel.initialRender.value == true) {
+            mealsViewModel.setInitialRender(false)
+            binding.listRvCategories.visibility = View.VISIBLE
+            binding.listRv.visibility = View.GONE
+        } else {
+            if(mealsViewModel.loadedMealsData.value == true) {
+                binding.listRvCategories.visibility = View.GONE
+                binding.listRv.visibility = View.VISIBLE
+            } else {
+                binding.listRvCategories.visibility = View.VISIBLE
+                binding.listRv.visibility = View.GONE
+            }
+        }
+
+
+        initRecyclers()
         initListeners()
     }
 
-    private fun initRecycler() {
+    fun String.toEditable(): Editable = Editable.Factory.getInstance().newEditable(this)
+
+    private fun initRecyclers() {
+
+//        binding.listRvCategories.visibility = View.VISIBLE
+//        binding.listRv.visibility = View.GONE
+
         binding.listRv.layoutManager = LinearLayoutManager(context)
 
         adapter = MealAdapter { meal ->
-            Toast.makeText(context, "clicked on meal: ${meal.id}", Toast.LENGTH_SHORT).show()
             mealDetailedViewModel.fetchMealById(meal.id)
-//            viewModel.selectedParameterState.value = ParameterState.Selected(parameter)
-//            requireActivity().supportFragmentManager.popBackStack()
         }
         binding.listRv.adapter = adapter
+
+
+
+        binding.listRvCategories.layoutManager= LinearLayoutManager(context)
+
+        categoryAdapter = ParameterAdapter { parameter ->
+            parameterViewModel.selectedParameterState.value = ParameterState.Selected(parameter)
+            binding.listRvCategories.visibility = View.GONE
+            binding.listRv.visibility = View.VISIBLE
+            mealsViewModel.setLoadedMealsData(true)
+        }
+
+        binding.listRvCategories.adapter = categoryAdapter
+
+        parameterViewModel.fetchAll(ParameterType.CATEGORY)
     }
 
     private var pageSize = 10
@@ -90,7 +133,7 @@ class AllMealsFragment : Fragment(R.layout.fragment_all_meals) {
         }
 
         binding.tagSearch.doAfterTextChanged {
-            mealsViewModel.updateSearchQuery(it.toString())
+            mealsViewModel.setTag(it.toString())
         }
 
         binding.filterBtn.setOnClickListener {
@@ -154,10 +197,36 @@ class AllMealsFragment : Fragment(R.layout.fragment_all_meals) {
 
     private fun initObservers() {
         mealsViewModel.mealsState.observe(viewLifecycleOwner, Observer {
+            if (it is MealsApiState.Success && !it.meals.isEmpty() && binding.listRvCategories.visibility == View.VISIBLE) {
+                binding.listRvCategories.visibility = View.GONE
+                binding.listRv.visibility = View.VISIBLE
+                mealsViewModel.setLoadedMealsData(true)
+            }
+//            if(binding.listRvCategories.visibility == View.VISIBLE) {
+//
+//            }
             Timber.e("desilo se")
             currentPage = 0
             renderState(it)
         })
+
+        // TODO possibly remove the observer when gone
+        parameterViewModel.parametersState.observe(viewLifecycleOwner, Observer {
+                if(binding.listRvCategories.visibility == View.VISIBLE) {
+                    when (it) {
+                        is ParametersState.Success -> {
+                            categoryAdapter.submitList(it.parameters)
+                        }
+                        is ParametersState.Error -> {
+                            categoryAdapter.submitList(listOf())
+                        }
+                        is ParametersState.Loading -> {
+                            categoryAdapter.submitList(listOf())
+                        }
+                    }
+                }
+        })
+
 
         parameterViewModel.selectedParameterState.observe(viewLifecycleOwner, Observer {
             if(it is ParameterState.Selected) {

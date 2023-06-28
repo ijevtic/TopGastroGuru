@@ -3,11 +3,11 @@ package com.example.topgastroguru.presentation.view.activities.recycler.viewhold
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.topgastroguru.data.models.MealDto
-import com.example.topgastroguru.databinding.LayoutItemSavedMealBinding
+import com.example.topgastroguru.databinding.LayoutItemPickMealBinding
 import timber.log.Timber
 import java.io.File
 
-class SavedMealViewHolder(private val itemBinding: LayoutItemSavedMealBinding) : RecyclerView.ViewHolder(itemBinding.root) {
+class PickMealViewHolder(private val itemBinding: LayoutItemPickMealBinding) : RecyclerView.ViewHolder(itemBinding.root) {
 
     fun bind(meal: MealDto) {
         itemBinding.titleTv.text = meal.name
@@ -23,13 +23,13 @@ class SavedMealViewHolder(private val itemBinding: LayoutItemSavedMealBinding) :
                 .load(meal.img)
                 .into(itemBinding.imgView)
         }
-        itemBinding.deleteBtn.setOnClickListener {
-            Timber.e("Delete button clicked")
+        itemBinding.btnPick.setOnClickListener {
+//            Timber.e("pick button clicked")
         }
     }
-    fun bindDeleteButton(meal: MealDto, onDeleteClick: (MealDto) -> Unit) {
-        itemBinding.deleteBtn.setOnClickListener {
-            onDeleteClick(meal)
+    fun bindPickButton(meal: MealDto, onPickClick: (MealDto) -> Unit) {
+        itemBinding.btnPick.setOnClickListener {
+            onPickClick(meal)
         }
     }
 }

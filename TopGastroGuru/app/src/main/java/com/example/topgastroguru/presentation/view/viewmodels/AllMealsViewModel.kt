@@ -1,12 +1,6 @@
 package com.example.topgastroguru.presentation.view.viewmodels
 
-import io.reactivex.Observable
-import io.reactivex.Single
-import java.util.concurrent.locks.ReentrantLock
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
-import timber.log.Timber
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.topgastroguru.data.models.Area
@@ -19,14 +13,18 @@ import com.example.topgastroguru.data.sources.remote.CalorieService
 import com.example.topgastroguru.data.sources.remote.converters.MealSimpleConverter
 import com.example.topgastroguru.presentation.contract.MealsContract
 import com.example.topgastroguru.presentation.view.states.MealsApiState
+import com.example.topgastroguru.presentation.view.states.MealsState
 import com.example.topgastroguru.util.SortType
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.viewModel
-
+import timber.log.Timber
 
 class AllMealsViewModel(
     private val calorieService: CalorieService,
@@ -36,10 +34,12 @@ class AllMealsViewModel(
     private val subscriptions = CompositeDisposable()
     override val mealsState: MutableLiveData<MealsApiState> = MutableLiveData()
     override val fullMealsState: MutableLiveData<List<MealSimple>> = MutableLiveData()
-    private var tagQuery: String? = null
+    override val initialRender: MutableLiveData<Boolean> = MutableLiveData(true)
+    override val loadedMealsData: MutableLiveData<Boolean> = MutableLiveData(false)
+    override var tagQuery: MutableLiveData<String> = MutableLiveData("")
     private var sortParameter: SortType? = null
     private var queryChar: Char? = null
-    private var queryString: String? = null
+    override var queryString: MutableLiveData<String> = MutableLiveData("")
     private var parameter: Parameter? = null
     private var brojac = 0
     var cnt = 0
@@ -49,7 +49,6 @@ class AllMealsViewModel(
     private val publishSubject: PublishSubject<String> = PublishSubject.create()
 
     init {
-
     }
 
 
@@ -244,7 +243,7 @@ class AllMealsViewModel(
         val filteredMeals = mutableListOf<MealSimple>()
         if(queryChar != null) {
             for (meal in fullMealsState.value!!) {
-                if (!meal.name!!.startsWith(queryString!!, true))
+                if (!meal.name!!.startsWith(queryString.value!!, true))
                     continue
 
 //                Timber.e("Meal: " + meal.name + " " + meal.getIngredients());
@@ -270,8 +269,8 @@ class AllMealsViewModel(
                         }
                     }
                 }
-                if(strTagsExists && tagQuery != null && tagQuery != " ") {
-                    if(!meal.strTags!!.contains(tagQuery!!, true))
+                if(strTagsExists && tagQuery != null && tagQuery.value != " " && !tagQuery.value!!.isEmpty()) {
+                    if(!meal.strTags!!.contains(tagQuery.value!!, true))
                         continue
                 }
                 filteredMeals.add(meal)
@@ -288,8 +287,8 @@ class AllMealsViewModel(
 
         var changedString = false
 
-        if (query != queryString) {
-            queryString = query
+        if (query != queryString.value) {
+            queryString.value = query
             changedString = true
         }
 
@@ -338,8 +337,16 @@ class AllMealsViewModel(
     }
 
     override fun setTag(tag: String) {
-        this.tagQuery = tag
+        this.tagQuery.value = tag
         applyFilters()
+    }
+
+    override fun setInitialRender(value: Boolean) {
+        this.initialRender.value = value
+    }
+
+    override fun setLoadedMealsData(value: Boolean) {
+        this.loadedMealsData.value = value
     }
 
     override fun setSort(sortType: SortType) {

@@ -15,9 +15,11 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import androidx.lifecycle.Observer
 import com.example.topgastroguru.data.models.entities.MealEntity
 import com.example.topgastroguru.presentation.contract.MealEntityContract
+import com.example.topgastroguru.presentation.contract.MealPlanContract
 import com.example.topgastroguru.presentation.view.fragments.EditMealFragment
 import com.example.topgastroguru.presentation.view.fragments.MealDetailedFragment
 import com.example.topgastroguru.presentation.view.viewmodels.MealEntityViewModel
+import com.example.topgastroguru.presentation.view.viewmodels.MealPlanViewModel
 import timber.log.Timber
 import java.util.Date
 
@@ -27,6 +29,7 @@ class MainActivity : AppCompatActivity() {
     private val mealEntityViewModel: MealEntityContract.ViewModel by viewModel<MealEntityViewModel>()
     private val mealsViewModel: MealsContract.ViewModel by viewModel<AllMealsViewModel>()
     private val parameterViewModel: ParametersContract.ViewModel by viewModel<ParameterViewModel>()
+    private val mealPlanViewModel: MealPlanContract.ViewModel by viewModel<MealPlanViewModel>()
 
     private lateinit var binding: ActivityMainBinding
 

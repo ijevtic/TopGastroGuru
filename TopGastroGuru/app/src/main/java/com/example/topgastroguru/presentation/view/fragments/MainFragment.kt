@@ -28,6 +28,12 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private val statisticsFragment by lazy { StatisticsFragment() }
     private val profileFragment by lazy { ProfileFragment() }
 
+//    private val allMealsFragment = AllMealsFragment()
+//    private val myMealsFragment = MyMealsFragment()
+//    private val mealPlanFragment = MealPlanFragment()
+//    private val statisticsFragment = StatisticsFragment()
+//    private val profileFragment = ProfileFragment()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

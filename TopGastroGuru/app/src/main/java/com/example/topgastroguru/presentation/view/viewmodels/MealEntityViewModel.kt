@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.topgastroguru.data.models.MealDto
 import com.example.topgastroguru.data.models.MealSimple
 import com.example.topgastroguru.data.models.entities.MealEntity
 import com.example.topgastroguru.data.repositories.MealRepository
@@ -87,6 +88,7 @@ class MealEntityViewModel(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
+                    deleteMealFromList(id)
                     Timber.e("Meal deleted")
                 },
                 {
@@ -110,6 +112,14 @@ class MealEntityViewModel(
                 }
             )
         subscriptions.add(subscription)
+    }
+
+    private fun deleteMealFromList(mealId: String) {
+        if(allMeals.value is MealsState.Success) {
+            val list = (allMeals.value as MealsState.Success).meals.toMutableList()
+            list.removeIf { it.id == mealId }
+            allMeals.value = MealsState.Success(list)
+        }
     }
 
     override fun onCleared() {
