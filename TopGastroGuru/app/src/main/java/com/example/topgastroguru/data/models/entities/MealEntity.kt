@@ -17,5 +17,6 @@ data class MealEntity(
     val category: String,
     val date:Date,
 //  Type can be lunch, dinner...
-    val type:String
+    val type:String,
+    val calValue: String
 )

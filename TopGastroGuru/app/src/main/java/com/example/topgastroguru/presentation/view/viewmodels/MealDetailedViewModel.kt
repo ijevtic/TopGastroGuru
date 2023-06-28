@@ -22,8 +22,8 @@ class MealDetailedViewModel(
 
     //For remote data source
     // Used for testing of calorie service for now
-    override fun fetchMealById(id: String) {
-        Timber.e("GAAAS"+ meal.value)
+    override fun fetchMealById(id: String, calValue: String) {
+//        Timber.e("GAAAS"+ meal.value)
         val subscription = mealRepository
             .fetchMealById(id)
             .subscribeOn(Schedulers.io())
@@ -31,32 +31,7 @@ class MealDetailedViewModel(
             .subscribe(
                 {
                     meal.value = MealDetailedConverter.convertToMealDetailed(it.meals[0])
-
-//                    for ((key, value) in meal.value!!.ingredients.orEmpty()) {
-//                        if (key == null || value == null) {
-//                            break
-//                        }
-//                        Timber.e("Map iteration: Ingredient: $key, Measure: $value")
-//
-//                        val subscription= calorieService
-//                            .getNutritionContent("$value $key")
-//                            .subscribeOn(Schedulers.io())
-//                            .observeOn(AndroidSchedulers.mainThread())
-//                            .subscribe(
-//                                {
-//                                    Timber.e(it.toString())
-//                                    for (food in it) {
-//                                        meal.value!!.increaseCalValue(food.calories)
-//                                    }
-//                                },
-//                                {
-//                                    Timber.e(it)
-//                                }
-//                            )
-//                        subscriptions.add(subscription)
-//                    }
-////                    Thread.sleep(5000)
-//                    Timber.e("Meal:\n" + meal.value.toString())
+                    meal.value?.calValue = calValue
                 },
                 {
                     Timber.e(it)

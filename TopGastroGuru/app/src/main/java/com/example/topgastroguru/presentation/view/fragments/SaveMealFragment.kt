@@ -61,6 +61,7 @@ class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
     private lateinit var photoBT: Button
     private lateinit var dateButton: Button
     private lateinit var datePickerDialog: DatePickerDialog
+    private lateinit var calValueTV: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -95,6 +96,7 @@ class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
         categoryTV = binding.category
         saveBT = binding.save
         quitBT = binding.quit
+        calValueTV = binding.calValueTV
     }
 
     private fun initValues(){
@@ -110,6 +112,7 @@ class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
             categoryTV.setText(meal.category)
             linkTV.setText(meal.link)
             imgPath = meal.mealThumb?:"Not available"
+            calValueTV.setText(meal.calValue)
 
             DownloadImageFromInternet(photoIV).execute(meal.mealThumb)
         }
@@ -139,7 +142,8 @@ class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
                         type = typeET.text.toString(),
                         img = imgPath,
                         date = date,
-                        id = it2
+                        id = it2,
+                        calValue = calValueTV.text.toString()
                     )
                 }
             }?.let { it2 -> mealDetailedVM.saveMealToDB(it2) }
@@ -242,8 +246,8 @@ class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
     private fun getTodaysDate(): String? {
         val cal: Calendar = Calendar.getInstance()
         val year: Int = cal.get(Calendar.YEAR)
-        var month: Int = cal.get(Calendar.MONTH)
-        month = month + 1
+        var month: Int = cal.get(Calendar.MONTH-1)
+        month = month+1
         val day: Int = cal.get(Calendar.DAY_OF_MONTH)
         date= Date(year, month, day)
         return makeDateString(day, month, year)

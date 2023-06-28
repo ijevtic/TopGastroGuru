@@ -43,6 +43,7 @@ class MealDetailedFragment: Fragment(R.layout.fragment_meal_detailed) {
     private lateinit var tagsTV: TextView
     private lateinit var saveBT: Button
     private lateinit var linkTV: TextView
+    private lateinit var calValueTV: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -73,6 +74,7 @@ class MealDetailedFragment: Fragment(R.layout.fragment_meal_detailed) {
         tagsTV = binding.tags
         saveBT = binding.save
         linkTV = binding.link
+        calValueTV = binding.calValueTV
 
         binding.save.setOnClickListener {
             (activity as MainActivity?)?.addFragment(SaveMealFragment())
@@ -87,6 +89,7 @@ class MealDetailedFragment: Fragment(R.layout.fragment_meal_detailed) {
             categoryTV.setText(meal.category)
             tagsTV.setText(meal.tags)
             linkTV.setText(meal.link)
+            calValueTV.setText(meal.calValue)
             DownloadImageFromInternet(photoIV).execute(meal.mealThumb)
         }
     }
@@ -117,16 +120,6 @@ class MealDetailedFragment: Fragment(R.layout.fragment_meal_detailed) {
     }
 
     private fun initObservers() {
-//        mealDetailedVM.meal.observe(viewLifecycleOwner, Observer {
-//            Timber.e("Meal: $it")
-//            nameTV.setText(it.name)
-//            areaTV.setText(it.area)
-//            instructionsTV.setText(it.instructions)
-//            categoryTV.setText(it.category)
-//            tagsTV.setText(it.tags)
-//            linkTV.setText(it.link)
-//            photoIV.setImageURI(it.mealThumb.toUri())
-//        })
     }
 
     override fun onDestroyView() {
