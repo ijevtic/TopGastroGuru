@@ -96,9 +96,20 @@ class MealEntityViewModel(
         subscriptions.add(subscription)
     }
 
-    override fun editMealInDB(meal: MealSimple) {
-        // verovatno ne treba mealSimple posto on nema datum? mada mozda se datum ne menja
-        TODO("Not yet implemented")
+    override fun editMealInDB(meal: MealEntity) {
+        val subscription = mealRepository
+            .editMeal(meal)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    Timber.e("Meal edited")
+                },
+                {
+                    Timber.e("error editing meal")
+                }
+            )
+        subscriptions.add(subscription)
     }
 
     override fun onCleared() {

@@ -63,8 +63,12 @@ class MainActivity : AppCompatActivity() {
 
         //TODO: Add observer for mealEntityViewModel.meal
         mealEntityViewModel.allMeals.observe(this, Observer {
-            Timber.e("MainActivity notified of change: AllMeals: $it")
+            Timber.e("MainActivity notified of change: $it")
 //            addFragment(MealDetailedFragment())
+        })
+
+        mealsViewModel.fullMealsState.observe(this, Observer {
+            Timber.e("MainActivity notified of change: FullMealsState: $it")
         })
     }
 

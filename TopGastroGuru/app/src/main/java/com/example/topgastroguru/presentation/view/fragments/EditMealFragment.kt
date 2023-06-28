@@ -1,5 +1,6 @@
 package com.example.topgastroguru.presentation.view.fragments
 
+import com.bumptech.glide.Glide
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
@@ -7,6 +8,7 @@ import android.app.DatePickerDialog
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
 import android.provider.MediaStore
@@ -19,10 +21,16 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import com.example.topgastroguru.R
+import com.example.topgastroguru.data.models.MealDto
 import com.example.topgastroguru.data.models.entities.MealEntity
+import com.example.topgastroguru.data.sources.remote.converters.MealDtoConverter
 import com.example.topgastroguru.databinding.FragmentEditMealBinding
+import com.example.topgastroguru.presentation.view.states.MealsApiState
+import com.example.topgastroguru.presentation.view.states.SingleMealState
 import com.example.topgastroguru.presentation.view.viewmodels.MealDetailedViewModel
 import com.example.topgastroguru.presentation.view.viewmodels.MealEntityViewModel
 import com.example.topgastroguru.util.Constants
@@ -33,7 +41,6 @@ import java.util.Calendar
 import java.util.Date
 
 class EditMealFragment: Fragment(R.layout.fragment_edit_meal) {
-    private val mealDetailedVM: MealDetailedViewModel by activityViewModel<MealDetailedViewModel>()
     private val mealEntityViewModel: MealEntityViewModel by activityViewModel<MealEntityViewModel>()
 
     private var _binding: FragmentEditMealBinding? = null
@@ -71,7 +78,6 @@ class EditMealFragment: Fragment(R.layout.fragment_edit_meal) {
 
     private fun init() {
         initUi()
-//        initValues()
         initListeners()
         initObservers()
     }
@@ -90,23 +96,6 @@ class EditMealFragment: Fragment(R.layout.fragment_edit_meal) {
         deleteBT = binding.delete
     }
 
-//    private fun initValues(){
-//        initDatePicker()
-//
-//        dateButton.setText(getTodaysDate())
-//
-//        var meal = mealEntityViewModel.meal.value
-//        if (meal != null) {
-//            nameTV.setText(meal.name)
-//            areaTV.setText(meal.area)
-//            instructionsTV.setText(meal.instructions)
-//            categoryTV.setText(meal.category)
-//            linkTV.setText(meal.link)
-//            imgPath = meal.mealThumb?:"Not available"
-//
-//            DownloadImageFromInternet(photoIV).execute(meal.mealThumb)
-//        }
-//    }
 
     private fun initListeners(){
         photoBT.setOnClickListener(View.OnClickListener {
@@ -116,60 +105,79 @@ class EditMealFragment: Fragment(R.layout.fragment_edit_meal) {
 
         binding.datePicker.setOnClickListener {
             openDatePicker()
-//            Timber.e("Value of dateButton: "+ dateButton.text)
         }
 
-        //TODO: Save ingredients to database
+        // Convert MealDto to MealEntity and update it in the database
         editBT.setOnClickListener {
-            mealDetailedVM.getMealDetailed()?.ingredients?.let { it1 ->
-                mealDetailedVM.getMealDetailed()?.id?.let { it2 ->
-                    MealEntity(
-                        name = nameTV.text.toString(),
-//                        ingredients = it1,
-                        instructions = instructionsTV.text.toString(),
-                        link = linkTV.text.toString(),
-                        category = categoryTV.text.toString(),
-                        type = typeET.text.toString(),
-                        img = imgPath,
-                        date = date,
-                        id = it2
-                    )
-                }
-            }?.let { it2 -> mealDetailedVM.saveMealToDB(it2) }
-
-            Toast.makeText(requireContext().applicationContext, "Meal saved!", Toast.LENGTH_SHORT).show()
-//            Timber.e("Picture saved with path: $imgPath")
-
-            //TODO mozda je prerano?
-            mealEntityViewModel.getAllMeals()
-
-            requireActivity().supportFragmentManager.popBackStack()
-            requireActivity().supportFragmentManager.popBackStack()
+            if (mealEntityViewModel.meal.value is SingleMealState.Success) {
+                val mealDto = (mealEntityViewModel.meal.value as SingleMealState.Success).meal
+                val mealEntity = MealDtoConverter.mapMealDtoToMealEntity(mealDto)
+                mealEntityViewModel.editMealInDB(mealEntity)
+                Toast.makeText(requireContext().applicationContext, "Meal change saved!", Toast.LENGTH_SHORT).show()
+                mealEntityViewModel.getAllMeals()
+                requireActivity().supportFragmentManager.popBackStack()
+            }
         }
 
         deleteBT.setOnClickListener {
-            val builder = AlertDialog.Builder(requireContext())
-            builder.setTitle("Quit")
-            builder.setMessage("Are you sure you want to quit?")
-            builder.setPositiveButton("Yes") { dialogInterface, which ->
+            if (mealEntityViewModel.meal.value is SingleMealState.Success) {
+                val mealDto = (mealEntityViewModel.meal.value as SingleMealState.Success).meal
+                mealEntityViewModel.deleteMealFromDB(mealDto.id)
+                Toast.makeText(requireContext().applicationContext, "Meal deleted!", Toast.LENGTH_SHORT).show()
+                mealEntityViewModel.getAllMeals()
+                //TODO ne redi
                 requireActivity().supportFragmentManager.popBackStack()
             }
-            builder.setNegativeButton("No") { dialogInterface, which ->
-                Toast.makeText(
-                    requireContext().applicationContext,
-                    "Keep grinding",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-            val alertDialog: AlertDialog = builder.create()
-            alertDialog.setCancelable(false)
-            alertDialog.show()
         }
     }
 
     private fun initObservers() {
-
+        mealEntityViewModel.meal.observe(viewLifecycleOwner, Observer {
+            renderState(it)
+        })
     }
+
+    private fun renderState(state: SingleMealState) {
+        when (state) {
+            is SingleMealState.Success -> {
+                showLoadingState(false)
+                renderData(state.meal)
+            }
+            is SingleMealState.Error -> {
+                showLoadingState(false)
+                renderData(null)
+                Toast.makeText(requireContext().applicationContext, state.message, Toast.LENGTH_SHORT).show()
+            }
+            is SingleMealState.Loading -> {
+                showLoadingState(true)
+            }
+        }
+    }
+
+    private fun renderData(meal: MealDto?) {
+        if (meal != null) {
+            initDatePicker()
+            dateButton.setText(meal.date.toString())
+            nameTV.setText(meal.name)
+            instructionsTV.setText(meal.instructions)
+            linkTV.setText(meal.link)
+            typeET.setText(meal.type)
+            categoryTV.setText(meal.category)
+            //TODO: copy how to show img
+            if(meal.img.startsWith("http"))
+                DownloadImageFromInternet(photoIV).execute(meal.img)
+            else  {
+                Glide.with(requireContext().applicationContext)
+                    .load(File(meal.img))
+                    .into(photoIV)
+            }
+        }
+    }
+
+    private fun showLoadingState(loading: Boolean) {
+        binding.loadingPb.isVisible = loading
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

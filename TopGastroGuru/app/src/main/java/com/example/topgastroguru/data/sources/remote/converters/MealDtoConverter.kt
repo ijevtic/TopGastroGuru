@@ -18,6 +18,19 @@ class MealDtoConverter {
             )
         }
 
+        fun mapMealDtoToMealEntity(mealDto: MealDto): MealEntity {
+            return MealEntity(
+                id = mealDto.id,
+                name = mealDto.name,
+                img = mealDto.img,
+                instructions = mealDto.instructions,
+                link = mealDto.link,
+                category = mealDto.category,
+                date = mealDto.date,
+                type = mealDto.type
+            )
+        }
+
         fun mapListMealEntityToListMealDto(listMealEntity: List<MealEntity>): List<MealDto> {
             val listMealDto = mutableListOf<MealDto>()
             for (mealEntity in listMealEntity) {

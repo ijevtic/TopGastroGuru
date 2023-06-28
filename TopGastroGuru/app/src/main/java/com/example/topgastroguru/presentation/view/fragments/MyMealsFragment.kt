@@ -67,6 +67,7 @@ class MyMealsFragment : Fragment(R.layout.fragment_my_meals) {
 
         adapter = SavedMealAdapter { meal ->
             Toast.makeText(context, "clicked on meal: ${meal.id}", Toast.LENGTH_SHORT).show()
+            mealEntityViewModel.getMealById(meal.id)
             mealEntityViewModel.getAllMeals()
 //            viewModel.selectedParameterState.value = ParameterState.Selected(parameter)
 //            requireActivity().supportFragmentManager.popBackStack()

@@ -22,11 +22,11 @@ val mealModule = module {
 
     viewModel { LoginViewModel(userRepository = get()) }
 
-    viewModel { MealDetailedViewModel(mealRepository = get(), calorieService = get()) }
+    viewModel { MealDetailedViewModel(mealRepository = get()) }
 
     viewModel { MealEntityViewModel(mealRepository = get()) }
 
-    viewModel { AllMealsViewModel(mealRepository = get()) }
+    viewModel { AllMealsViewModel(mealRepository = get(), calorieService = get()) }
 
     viewModel { ParameterViewModel(parameterRepository = get()) }
 
