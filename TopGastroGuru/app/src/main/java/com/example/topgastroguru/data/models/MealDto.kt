@@ -11,6 +11,7 @@ class MealDto (
     val category: String,
     val date: Date,
     val type:String,
+    val calValue: String
 ) {
 
 }

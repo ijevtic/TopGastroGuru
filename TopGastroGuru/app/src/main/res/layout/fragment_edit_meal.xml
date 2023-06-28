@@ -20,6 +20,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/calValueTV"
+        android:layout_width="115dp"
+        android:layout_height="28dp"
+        android:text="TextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/name" />
+
+    <TextView
         android:id="@+id/area"
         android:layout_width="59dp"
         android:layout_height="22dp"

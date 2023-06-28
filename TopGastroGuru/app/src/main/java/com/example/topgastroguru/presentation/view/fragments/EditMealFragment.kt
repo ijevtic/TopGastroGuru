@@ -61,6 +61,7 @@ class EditMealFragment: Fragment(R.layout.fragment_edit_meal) {
     private lateinit var photoBT: Button
     private lateinit var dateButton: Button
     private lateinit var datePickerDialog: DatePickerDialog
+    private lateinit var calValueTV: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -94,6 +95,7 @@ class EditMealFragment: Fragment(R.layout.fragment_edit_meal) {
         categoryTV = binding.category
         editBT = binding.edit
         deleteBT = binding.delete
+        calValueTV = binding.calValueTV
     }
 
 

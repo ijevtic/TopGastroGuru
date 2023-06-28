@@ -32,6 +32,7 @@ import com.example.topgastroguru.util.SortType
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import timber.log.Timber
 import kotlin.math.min
+import kotlin.math.roundToInt
 
 class AllMealsFragment : Fragment(R.layout.fragment_all_meals) {
 
@@ -103,7 +104,7 @@ class AllMealsFragment : Fragment(R.layout.fragment_all_meals) {
         binding.listRv.layoutManager = LinearLayoutManager(context)
 
         adapter = MealAdapter { meal ->
-            mealDetailedViewModel.fetchMealById(meal.id)
+            mealDetailedViewModel.fetchMealById(meal.id, meal.calValue.roundToInt().toString())
         }
         binding.listRv.adapter = adapter
 

@@ -17,7 +17,8 @@ class MealDtoConverter {
                 link = mealEntity.link,
                 category = mealEntity.category,
                 date = mealEntity.date,
-                type = mealEntity.type
+                type = mealEntity.type,
+                calValue = mealEntity.calValue
             )
         }
 
@@ -30,7 +31,8 @@ class MealDtoConverter {
                 link = mealDto.link,
                 category = mealDto.category,
                 date = mealDto.date,
-                type = mealDto.type
+                type = mealDto.type,
+                calValue = mealDto.calValue
             )
         }
 
@@ -60,7 +62,8 @@ class MealDtoConverter {
                 category = mealResponse.strCategory?:"",
                 date = Date(),
 //                date = mealResponse.dateModified?:"",
-                type = mealResponse.strArea?:""
+                type = mealResponse.strArea?:"",
+                calValue = "Not available"
             )
         }
     }
