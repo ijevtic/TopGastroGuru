@@ -1,6 +1,7 @@
 package com.example.topgastroguru.presentation.view.fragments
 
 import android.app.AlertDialog
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,10 +10,13 @@ import android.widget.CheckBox
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.topgastroguru.R
+import com.example.topgastroguru.data.models.MealDto
+import com.example.topgastroguru.data.sources.remote.MailService
 import com.example.topgastroguru.databinding.FragmentOverviewBinding
 import com.example.topgastroguru.presentation.contract.PlanOverViewContract
 import com.example.topgastroguru.presentation.view.activities.recycler.adapter.PickMealAdapter
 import com.example.topgastroguru.presentation.view.viewmodels.PlanOverviewViewModel
+import com.example.topgastroguru.util.Constants
 import com.example.topgastroguru.util.Weekday
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
@@ -108,6 +112,13 @@ class TabPlanOverviewFragment : Fragment(R.layout.fragment_overview) {
             } else {
                 binding.mondayTv.visibility = View.VISIBLE
             }
+            if(planOverviewViewModel.fridayState.value!!.size == 0 &&
+                planOverviewViewModel.mondayState.value!!.size == 0 &&
+                planOverviewViewModel.tuesdayState.value!!.size == 0) {
+                binding.savePlanBtn.visibility = View.GONE
+            } else {
+                binding.savePlanBtn.visibility = View.VISIBLE
+            }
         })
 
         planOverviewViewModel.tuesdayState.observe(viewLifecycleOwner, {
@@ -116,6 +127,13 @@ class TabPlanOverviewFragment : Fragment(R.layout.fragment_overview) {
                 binding.tuesdayTv.visibility = View.GONE
             } else {
                 binding.tuesdayTv.visibility = View.VISIBLE
+            }
+            if(planOverviewViewModel.fridayState.value!!.size == 0 &&
+                planOverviewViewModel.mondayState.value!!.size == 0 &&
+                planOverviewViewModel.tuesdayState.value!!.size == 0) {
+                binding.savePlanBtn.visibility = View.GONE
+            } else {
+                binding.savePlanBtn.visibility = View.VISIBLE
             }
         })
 
@@ -126,10 +144,30 @@ class TabPlanOverviewFragment : Fragment(R.layout.fragment_overview) {
             } else {
                 binding.fridayTv.visibility = View.VISIBLE
             }
+
+            if(planOverviewViewModel.fridayState.value!!.size == 0 &&
+                planOverviewViewModel.mondayState.value!!.size == 0 &&
+                planOverviewViewModel.tuesdayState.value!!.size == 0) {
+                binding.savePlanBtn.visibility = View.GONE
+            } else {
+                binding.savePlanBtn.visibility = View.VISIBLE
+            }
         })
 
         binding.savePlanBtn.setOnClickListener {
-
+            val sharedPreferences = requireActivity().getSharedPreferences(
+                requireActivity().packageName, Context.MODE_PRIVATE
+            )
+            Thread {
+//                var meals = mutableListOf<MealDto>()
+//                meals.addAll(planOverviewViewModel.mondayState.value!!)
+//                meals.addAll(planOverviewViewModel.tuesdayState.value!!)
+//                meals.addAll(planOverviewViewModel.fridayState.value!!)
+                MailService.sendEmail(sharedPreferences.getString(Constants.EMAIL, "")!!,
+                    planOverviewViewModel.mondayState.value!!,
+                    planOverviewViewModel.tuesdayState.value!!,
+                    planOverviewViewModel.fridayState.value!!,)
+            }.start()
         }
     }
 
