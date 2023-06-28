@@ -1,7 +1,10 @@
 package com.example.topgastroguru.presentation.view.fragments
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
+import android.provider.SyncStateContract.Constants
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -35,6 +38,9 @@ class StatisticsFragment: Fragment(R.layout.fragment_statistics) {
 
     private lateinit var chart: BarChart
     private lateinit var changeStatBT:Button
+    private var bmi = 0f
+    private lateinit var sharedPreferences: SharedPreferences
+
 
     private var _binding: FragmentStatisticsBinding? = null
 
@@ -81,6 +87,8 @@ class StatisticsFragment: Fragment(R.layout.fragment_statistics) {
 
     private fun initObservers() {
         mealEntityViewModel.allMeals.observe(viewLifecycleOwner, Observer {
+            sharedPreferences = requireActivity().getSharedPreferences(requireActivity().packageName, Context.MODE_PRIVATE)
+            bmi = sharedPreferences.getFloat(com.example.topgastroguru.util.Constants.DAILY_CALORIES, 0f)
             renderState(it)
         })
     }
