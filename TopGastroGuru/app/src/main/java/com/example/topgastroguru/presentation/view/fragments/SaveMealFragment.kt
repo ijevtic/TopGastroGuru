@@ -246,8 +246,8 @@ class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
     private fun getTodaysDate(): String? {
         val cal: Calendar = Calendar.getInstance()
         val year: Int = cal.get(Calendar.YEAR)
-        var month: Int = cal.get(Calendar.MONTH)
-        month = month + 1
+        var month: Int = cal.get(Calendar.MONTH-1)
+        month = month+1
         val day: Int = cal.get(Calendar.DAY_OF_MONTH)
         date= Date(year, month, day)
         return makeDateString(day, month, year)

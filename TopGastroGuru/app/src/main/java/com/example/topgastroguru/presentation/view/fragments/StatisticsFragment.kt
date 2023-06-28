@@ -44,9 +44,9 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
 
     private fun initUi() {
 //        Test DB
-        binding.button.setOnClickListener {
-            mealEntityViewModel.getAllMeals()
-        }
+//        binding.button.setOnClickListener {
+//            mealEntityViewModel.getAllMeals()
+//        }
     }
 
     private fun initObservers() {
