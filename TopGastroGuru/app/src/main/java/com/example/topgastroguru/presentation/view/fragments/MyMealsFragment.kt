@@ -111,10 +111,6 @@ class MyMealsFragment : Fragment(R.layout.fragment_my_meals) {
                 }
             }
         })
-
-        binding.testFetchBtn.setOnClickListener {
-            mealEntityViewModel.getAllMeals()
-        }
     }
 
     private fun showLoadingState(loading: Boolean) {

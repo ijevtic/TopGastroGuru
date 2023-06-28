@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="80dp"
+    android:minHeight="90dp"
     android:orientation="horizontal"
     android:layout_margin="2dp"
     android:background="?colorSurface">
@@ -22,31 +22,22 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_weight="5"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
         <TextView
             android:id="@+id/titleTv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:text="MealTitle"
+            android:text="Meal title"
             android:textSize="20sp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginVertical="5dp"
-            app:layout_constraintEnd_toEndOf="parent"/>
-
+            android:layout_margin="10dp"/>
         <TextView
-            android:id="@+id/calTV"
-            android:layout_width="match_parent"
+            android:id="@+id/caloriesTv"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:text="@string/item_not_available"
-            android:textSize="20sp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginVertical="10dp"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            android:text="Not available"
+            android:textSize="15sp"
+            android:layout_margin="10dp"/>
     </LinearLayout>
 
 </LinearLayout>

@@ -15,6 +15,7 @@ import com.example.topgastroguru.presentation.contract.MealsContract
 import com.example.topgastroguru.presentation.view.states.MealsApiState
 import com.example.topgastroguru.presentation.view.states.MealsState
 import com.example.topgastroguru.util.SortType
+import com.example.topgastroguru.util.Util
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -124,6 +125,8 @@ class AllMealsViewModel(
 
     // Shared variable
     var sharedInt: MutableList<Int> = mutableListOf()
+    var globalLock = ReentrantLock()
+    var mealGain = 0
     private fun fetchCalories(initBrojac: Int) {
         Timber.e("Usao u fetchCalories")
         var fetchedList: MutableList<MealSimple> = mutableListOf()
@@ -141,9 +144,10 @@ class AllMealsViewModel(
                     break
                 }
 //                Timber.e("Map iteration: Ingredient: $key, Measure: $value")
-
+                val vFetch = Util.formatNameToSnakeLowerCase(value)
+                val kFetch = Util.formatNameToSnakeLowerCase(key)
                 val subscription= calorieService
-                    .getNutritionContent("$value $key")
+                    .getNutritionContent("$vFetch $kFetch")
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
@@ -156,13 +160,28 @@ class AllMealsViewModel(
                             Timber.e("Total: $total")
                             Timber.e("Ingredient number: $sharedInt")
                             meal.calValue += total
+                            Timber.e("acac ok ing")
 
                             // only when it is the last ingredient
 //                            lock.get(index).lock()
                             Timber.e("meal.ingredients.size: ${meal.ingredients.size} + sharedInt: ${sharedInt[index]}")
                             if (meal.ingredients.size== sharedInt[index]){
                                 Timber.e("DODAO SASTOJAK")
+                                globalLock.lock()
+                                fetchedList.remove(meal)
                                 fetchedList.add(meal)
+                                Timber.e("acac gain $mealGain " + fetchedList.size.toString())
+                                mealGain++
+                                globalLock.unlock()
+                            }
+                            globalLock.lock()
+                            if(mealGain > 5) {
+                                mealGain = 0
+                                globalLock.unlock()
+                                fullMealsState.value = fetchedList
+                                applyFilters()
+                            } else {
+                                globalLock.unlock()
                             }
                             if (fetchedList.size == fullMealsState.value?.size) {
                                 Timber.e("UPDEJTOVAO JE LISTU")
@@ -353,7 +372,6 @@ class AllMealsViewModel(
 
     private fun setMealList(unsortedList: List<MealSimple>) {
         var meals : List<MealSimple>  = unsortedList
-
         if(sortParameter != null) {
             when(sortParameter) {
                 SortType.NONE -> {}
@@ -361,7 +379,7 @@ class AllMealsViewModel(
                     meals = meals.sortedBy { it.name }
                 }
                 SortType.CALORIES -> {
-                    //TODO sort by calories
+                    meals = meals.sortedBy { -it.calValue }
                 }
                 else -> {}
             }
