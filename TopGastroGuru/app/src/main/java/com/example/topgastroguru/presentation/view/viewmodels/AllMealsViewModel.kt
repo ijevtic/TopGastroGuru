@@ -167,7 +167,7 @@ class AllMealsViewModel(
                             if (fetchedList.size == fullMealsState.value?.size) {
                                 Timber.e("UPDEJTOVAO JE LISTU")
                                 fullMealsState.value = fetchedList
-//                                applyFilters()
+                                applyFilters()
                             }
 //                            lock.get(index).unlock()
                             },
