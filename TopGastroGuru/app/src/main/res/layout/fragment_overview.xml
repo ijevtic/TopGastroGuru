@@ -44,12 +44,16 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingBottom="15dp"
             android:orientation="vertical">
             <TextView
+
                 android:id="@+id/mondayTv"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/monday"
+                android:background="?colorTertiary"
+
                 android:textSize="20sp" />
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/listRvMonday"
@@ -61,12 +65,16 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingBottom="15dp"
+
             android:orientation="vertical">
             <TextView
                 android:id="@+id/tuesdayTv"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/tuesday"
+                android:background="?colorTertiary"
+
                 android:textSize="20sp" />
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/listRvTuesday"
@@ -78,11 +86,14 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingBottom="15dp"
+
             android:orientation="vertical">
             <TextView
                 android:id="@+id/fridayTv"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="?colorTertiary"
                 android:text="@string/friday"
                 android:textSize="20sp" />
             <androidx.recyclerview.widget.RecyclerView

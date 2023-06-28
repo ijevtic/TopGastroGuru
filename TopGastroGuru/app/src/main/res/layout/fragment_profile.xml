@@ -54,39 +54,46 @@
         android:orientation="vertical">
         <EditText
             android:visibility="gone"
-            android:id="@+id/old_password_edit_text"
+            android:id="@+id/heightTv"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginBottom="15dp"
-            android:ems="10"
-            android:hint="@string/old_password"
-            android:inputType="textPassword" />
+            android:hint="Height"
+            android:ems="10"/>
         <EditText
             android:visibility="gone"
-            android:id="@+id/new_password_edit_text"
+            android:id="@+id/weightTv"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginBottom="15dp"
-            android:ems="10"
-            android:hint="@string/new_password"
-            android:inputType="textPassword" />
+            android:hint="Weight"
+            android:ems="10"/>
+        <EditText
+            android:visibility="gone"
+            android:id="@+id/ageTv"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="15dp"
+            android:hint="Age"
+            android:ems="10"/>
         <Button
-            android:id="@+id/change_password_button"
+            android:id="@+id/change_stats_button"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginBottom="15dp"
-            android:text="@string/change_password" />
+            android:text="Change info" />
         <Button
             android:visibility="gone"
-            android:id="@+id/update_password_button"
+            android:id="@+id/update_stats_button"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginBottom="15dp"
-            android:text="@string/update_password" />
+            android:text="Update info" />
         <Button
             android:visibility="gone"
             android:id="@+id/give_up_button"

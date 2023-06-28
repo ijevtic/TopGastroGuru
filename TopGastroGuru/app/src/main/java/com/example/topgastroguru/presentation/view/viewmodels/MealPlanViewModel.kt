@@ -133,7 +133,7 @@ class MealPlanViewModel(
                 return
             }
             val filteredMeals = meals.filter { meal ->
-                meal.name.startsWith(queryString.value!!, true) /*&& meal.calValue != "Not available"*/
+                meal.name.startsWith(queryString.value!!, true) && meal.calValue != -1.0
             }
             allMealsFiltered.value = MealsState.Success(filteredMeals)
             Timber.e("acac apply filters online ok" + filteredMeals.size)

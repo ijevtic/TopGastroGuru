@@ -61,6 +61,53 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             editor.apply()
             requireActivity().finish()
         })
+
+        binding.heightTv.visibility = View.GONE
+        binding.weightTv.visibility = View.GONE
+        binding.ageTv.visibility = View.GONE
+        binding.changeStatsButton.visibility = View.VISIBLE
+        binding.updateStatsButton.visibility = View.GONE
+        binding.giveUpButton.visibility = View.GONE
+
+        binding.changeStatsButton.setOnClickListener(View.OnClickListener { v: View? ->
+            binding.heightTv.visibility = View.VISIBLE
+            binding.weightTv.visibility = View.VISIBLE
+            binding.ageTv.visibility = View.VISIBLE
+            binding.changeStatsButton.visibility = View.GONE
+            binding.updateStatsButton.visibility = View.VISIBLE
+            binding.giveUpButton.visibility = View.VISIBLE
+        })
+
+        binding.giveUpButton.setOnClickListener(View.OnClickListener { v: View? ->
+            binding.heightTv.visibility = View.GONE
+            binding.weightTv.visibility = View.GONE
+            binding.ageTv.visibility = View.GONE
+            binding.changeStatsButton.visibility = View.VISIBLE
+            binding.updateStatsButton.visibility = View.GONE
+            binding.giveUpButton.visibility = View.GONE
+        })
+
+        binding.updateStatsButton.setOnClickListener(View.OnClickListener { v: View? ->
+            val height = binding.heightTv.text.toString()
+            val weight = binding.weightTv.text.toString()
+            val age = binding.ageTv.text.toString()
+            if(height.isEmpty() || weight.isEmpty() || age.isEmpty()) {
+                return@OnClickListener
+            }
+
+//            val sharedPreferences = requireContext().getSharedPreferences(requireActivity().packageName, Context.MODE_PRIVATE)
+            val editor = sharedPreferences.edit()
+            editor.putFloat(Constants.DAILY_CALORIES, height.toFloat()*6.25f+10f*weight.toFloat()-5*age.toFloat()+5)
+            editor.apply()
+
+            binding.heightTv.visibility = View.GONE
+            binding.weightTv.visibility = View.GONE
+            binding.ageTv.visibility = View.GONE
+            binding.changeStatsButton.visibility = View.VISIBLE
+            binding.updateStatsButton.visibility = View.GONE
+            binding.giveUpButton.visibility = View.GONE
+        })
+
     }
 
     private fun initObservers() {
