@@ -98,17 +98,28 @@ class MealEntityViewModel(
         subscriptions.add(subscription)
     }
 
+    override fun editMealInDB(meal: MealEntity) {
+        val subscription = mealRepository
+            .editMeal(meal)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    Timber.e("Meal edited")
+                },
+                {
+                    Timber.e("error editing meal")
+                }
+            )
+        subscriptions.add(subscription)
+    }
+
     private fun deleteMealFromList(mealId: String) {
         if(allMeals.value is MealsState.Success) {
             val list = (allMeals.value as MealsState.Success).meals.toMutableList()
             list.removeIf { it.id == mealId }
             allMeals.value = MealsState.Success(list)
         }
-    }
-
-    override fun editMealInDB(meal: MealSimple) {
-        // verovatno ne treba mealSimple posto on nema datum? mada mozda se datum ne menja
-        TODO("Not yet implemented")
     }
 
     override fun onCleared() {

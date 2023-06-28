@@ -9,6 +9,7 @@ class MealViewHolder(private val itemBinding: LayoutItemMealBinding) : RecyclerV
 
     fun bind(meal: MealSimple) {
         itemBinding.titleTv.text = meal.name
+        itemBinding.calTV.text = meal.calValue.toString()
 
         Glide.with(itemView) // Use itemView as the context
             .load(meal.link)

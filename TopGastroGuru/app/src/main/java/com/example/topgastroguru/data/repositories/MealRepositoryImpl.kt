@@ -47,7 +47,7 @@ class MealRepositoryImpl(
     }
 
     override fun fetchMealsByFirstLetter(letter: Char): Observable<MealResponse> {
-        Timber.e("1 Fetching meals with first letter: $letter")
+//        Timber.e("1 Fetching meals with first letter: $letter")
         return remoteDataSource.getMealsByFirstLetter(letter)
     }
 
@@ -63,6 +63,10 @@ class MealRepositoryImpl(
         }
     }
 
+    override fun editMeal(meal: MealEntity): Completable {
+        localDataSource.deleteById(meal.id)
+        return localDataSource.insert(meal)
+    }
 
     private fun fetchMealsByCategory(category: Category ): Observable<MealResponse> {
         return remoteDataSource.getMealsByCategory(category.strCategory)

@@ -9,6 +9,7 @@ import com.example.topgastroguru.data.models.Ingredient
 import com.example.topgastroguru.data.models.MealSimple
 import com.example.topgastroguru.data.models.Parameter
 import com.example.topgastroguru.data.repositories.MealRepository
+import com.example.topgastroguru.data.sources.remote.CalorieService
 import com.example.topgastroguru.data.sources.remote.converters.MealSimpleConverter
 import com.example.topgastroguru.presentation.contract.MealsContract
 import com.example.topgastroguru.presentation.view.states.MealsApiState
@@ -18,10 +19,15 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
-
 class AllMealsViewModel(
+    private val calorieService: CalorieService,
     private val mealRepository: MealRepository
 ): ViewModel(), MealsContract.ViewModel {
 
@@ -36,6 +42,9 @@ class AllMealsViewModel(
     override var queryString: MutableLiveData<String> = MutableLiveData("")
     private var parameter: Parameter? = null
     private var brojac = 0
+    var cnt = 0
+
+    private val calMeal: MutableLiveData<MealSimple> = MutableLiveData()
 
     private val publishSubject: PublishSubject<String> = PublishSubject.create()
 
@@ -46,11 +55,11 @@ class AllMealsViewModel(
     private fun fetchMeals() {
         Timber.e("fetchMeals " + queryChar + " " + queryString + " " + parameter)
         if(queryChar == null) {
-            Timber.e("uso")
+//            Timber.e("uso")
             fetchMealsByParameter()
         }
         else {
-            Timber.e("uso2")
+//            Timber.e("uso2")
             fetchMealsByFirstLetter()
         }
     }
@@ -64,10 +73,11 @@ class AllMealsViewModel(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { it ->
-                Timber.e("Response meals" + it.toString())
+//                Timber.e("Response meals" + it.toString())
                 when (it) {
                     is MealsApiState.Success -> {
                         fullMealsState.value = it.meals
+//                        numberOfApiCalls()
                         brojac++
                         fetchCalories(brojac)
                         applyFilters()
@@ -83,7 +93,107 @@ class AllMealsViewModel(
         subscriptions.add(subscription)
     }
 
+    private fun numberOfApiCalls(){
+        var cnt = 0
+        for (meal in fullMealsState.value.orEmpty()) {
+            for ((key, value) in meal.ingredients) {
+                if (key == null || value == null) {
+                    break
+                }
+                cnt++
+            }
+        }
+        Timber.e("Broj poziva: $cnt")
+    }
+
+    // Create a ReentrantLock
+    var lock: MutableList<ReentrantLock> = mutableListOf(ReentrantLock(),ReentrantLock(),ReentrantLock(),ReentrantLock(),ReentrantLock(),ReentrantLock(),ReentrantLock(),ReentrantLock(),ReentrantLock(),ReentrantLock(),ReentrantLock(),ReentrantLock(),ReentrantLock(),ReentrantLock(),ReentrantLock(),ReentrantLock(),ReentrantLock(),ReentrantLock(),ReentrantLock(),ReentrantLock(),)
+
+    // Perform synchronized access on sharedInt
+    fun incrementSharedInt(index: Int) {
+        try {
+            synchronized(sharedInt) {
+                // Perform modifications to mutableList
+                sharedInt[index]++
+
+            }
+            // Critical section
+//            sharedInt[index]++
+        } finally {
+
+        }
+    }
+
+    // Shared variable
+    var sharedInt: MutableList<Int> = mutableListOf()
     private fun fetchCalories(initBrojac: Int) {
+        Timber.e("Usao u fetchCalories")
+        var fetchedList: MutableList<MealSimple> = mutableListOf()
+
+        sharedInt = MutableList(fullMealsState.value!!.size) { 0 }
+        lock= MutableList(fullMealsState.value!!.size) { ReentrantLock() }
+
+        for ((index, meal)  in fullMealsState.value.orEmpty().withIndex()) {
+            // Shared variable
+            Timber.e("Meal number of ingredients: ${meal.ingredients.size}")
+            for ((key, value) in meal.ingredients) {
+
+                incrementSharedInt(index)
+
+                if (key == null || value == null) {
+                    break
+                }
+//                Timber.e("Map iteration: Ingredient: $key, Measure: $value")
+
+                val subscription= calorieService
+                    .getNutritionContent("$value $key")
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                        {
+//                            Timber.e(""+it.toString())
+                            var total= 0.0
+                            for (food in it) {
+                                total += food.calories
+                            }
+                            Timber.e("Total: $total")
+                            Timber.e("Ingredient number: $sharedInt")
+                            meal.calValue += total
+
+                            // only when it is the last ingredient
+//                            lock.get(index).lock()
+                            Timber.e("meal.ingredients.size: ${meal.ingredients.size} + sharedInt: ${sharedInt[index]}")
+                            if (meal.ingredients.size== sharedInt[index]){
+                                Timber.e("DODAO SASTOJAK")
+                                fetchedList.add(meal)
+                            }
+                            if (fetchedList.size == fullMealsState.value?.size) {
+                                Timber.e("UPDEJTOVAO JE LISTU")
+                                fullMealsState.value = fetchedList
+//                                applyFilters()
+                            }
+//                            lock.get(index).unlock()
+                            },
+                        {
+                            Timber.e(it)
+                        }
+                    )
+                subscriptions.add(subscription)
+            }
+        }
+
+
+//        Thread{
+//            while (true){
+//                if (fetchedList.size == fullMealsState.value?.size /*&& initBrojac == brojac*/) {
+//                    fullMealsState.value = fetchedList
+//                    break
+//                }/*else if (initBrojac != brojac){
+//                    break
+//                }*/
+//            }
+//        }.start()
+
         ///
 //        fullMealsStateCalories = listOf()
 

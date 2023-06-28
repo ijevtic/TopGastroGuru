@@ -6,7 +6,6 @@ import com.example.topgastroguru.data.models.MealDetailed
 import com.example.topgastroguru.data.models.entities.MealEntity
 import com.example.topgastroguru.data.models.responses.Food
 import com.example.topgastroguru.data.repositories.MealRepository
-import com.example.topgastroguru.data.sources.remote.CalorieService
 import com.example.topgastroguru.data.sources.remote.converters.MealDetailedConverter
 import com.example.topgastroguru.presentation.contract.MealDetaildContract
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -15,8 +14,7 @@ import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 
 class MealDetailedViewModel(
-    private val mealRepository: MealRepository,
-    private val calorieService: CalorieService
+    private val mealRepository: MealRepository
 ): ViewModel(), MealDetaildContract.ViewModel {
 
     private val subscriptions = CompositeDisposable()
@@ -34,31 +32,31 @@ class MealDetailedViewModel(
                 {
                     meal.value = MealDetailedConverter.convertToMealDetailed(it.meals[0])
 
-                    for ((key, value) in meal.value!!.ingredients.orEmpty()) {
-                        if (key == null || value == null) {
-                            break
-                        }
-                        Timber.e("Map iteration: Ingredient: $key, Measure: $value")
-
-                        val subscription= calorieService
-                            .getNutritionContent("$value $key")
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(
-                                {
-                                    Timber.e(it.toString())
-                                    for (food in it) {
-                                        meal.value!!.increaseCalValue(food.calories)
-                                    }
-                                },
-                                {
-                                    Timber.e(it)
-                                }
-                            )
-                        subscriptions.add(subscription)
-                    }
-//                    Thread.sleep(5000)
-                    Timber.e("Meal:\n" + meal.value.toString())
+//                    for ((key, value) in meal.value!!.ingredients.orEmpty()) {
+//                        if (key == null || value == null) {
+//                            break
+//                        }
+//                        Timber.e("Map iteration: Ingredient: $key, Measure: $value")
+//
+//                        val subscription= calorieService
+//                            .getNutritionContent("$value $key")
+//                            .subscribeOn(Schedulers.io())
+//                            .observeOn(AndroidSchedulers.mainThread())
+//                            .subscribe(
+//                                {
+//                                    Timber.e(it.toString())
+//                                    for (food in it) {
+//                                        meal.value!!.increaseCalValue(food.calories)
+//                                    }
+//                                },
+//                                {
+//                                    Timber.e(it)
+//                                }
+//                            )
+//                        subscriptions.add(subscription)
+//                    }
+////                    Thread.sleep(5000)
+//                    Timber.e("Meal:\n" + meal.value.toString())
                 },
                 {
                     Timber.e(it)

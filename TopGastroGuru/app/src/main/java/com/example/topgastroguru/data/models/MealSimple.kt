@@ -9,9 +9,8 @@ class MealSimple(
     val strTags: String?,
     val ingredients: HashMap<String, String>
 ){
-    override fun toString(): String {
-        return name?:""
-    }
+    var calValue = 0.0
+
 
     fun getIngredients(): String {
         var returnString = ""
@@ -19,6 +18,10 @@ class MealSimple(
             returnString += "${ingredient.key} - ${ingredient.value}\n"
         }
         return returnString
+    }
+
+    override fun toString(): String {
+        return "MealSimple(name=$name, calValue=$calValue)"
     }
 
 }

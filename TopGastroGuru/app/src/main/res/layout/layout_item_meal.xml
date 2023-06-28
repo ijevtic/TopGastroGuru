@@ -35,6 +35,18 @@
             android:layout_marginLeft="20dp"
             android:layout_marginVertical="10dp"
             app:layout_constraintEnd_toEndOf="parent"/>
+
+        <TextView
+            android:id="@+id/calTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="@string/item_not_available"
+            android:textSize="20sp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginVertical="10dp"
+            app:layout_constraintEnd_toEndOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

@@ -16,8 +16,10 @@ import com.example.topgastroguru.databinding.FragmentMyMealsBinding
 import com.example.topgastroguru.presentation.contract.MealEntityContract
 import com.example.topgastroguru.presentation.view.activities.recycler.adapter.SavedMealAdapter
 import com.example.topgastroguru.presentation.view.states.MealsState
+import com.example.topgastroguru.presentation.view.viewmodels.AllMealsViewModel
 import com.example.topgastroguru.presentation.view.viewmodels.MealEntityViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 class MyMealsFragment : Fragment(R.layout.fragment_my_meals) {
@@ -64,7 +66,7 @@ class MyMealsFragment : Fragment(R.layout.fragment_my_meals) {
         binding.listRvSaved.layoutManager = LinearLayoutManager(context)
 
         adapter = SavedMealAdapter ({ meal -> // on click
-            //TODO doslic ovde se otvara fragment za editovanje
+            mealEntityViewModel.getMealById(meal.id)
         },{ meal -> // on delete
             val dialogClickListener =
                 DialogInterface.OnClickListener { dialog, which ->
