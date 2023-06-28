@@ -268,7 +268,7 @@ class SaveMealFragment: Fragment(R.layout.fragment_save_meal) {
         val day: Int = cal.get(Calendar.DAY_OF_MONTH)
         val style: Int = AlertDialog.THEME_HOLO_LIGHT
         datePickerDialog = DatePickerDialog(requireContext(), style, dateSetListener, year, month, day)
-        datePickerDialog.datePicker.minDate = System.currentTimeMillis() - 1000
+//        datePickerDialog.datePicker.minDate = System.currentTimeMillis() - 1000
     }
 
     private fun makeDateString(day: Int, month: Int, year: Int): String? {

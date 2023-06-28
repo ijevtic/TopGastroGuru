@@ -12,7 +12,6 @@ data class MealEntity(
     val img:String,
     val instructions:String,
     val link:String,
-//    val ingredients:Map<String, String>,
 //  Category can be chicken, beef, desert...
     val category: String,
     val date:Date,
