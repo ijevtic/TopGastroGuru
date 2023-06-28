@@ -32,7 +32,7 @@ val mealModule = module {
 
     viewModel { ParameterViewModel(parameterRepository = get()) }
 
-    viewModel { MealPlanViewModel(mealRepository = get()) }
+    viewModel { MealPlanViewModel(calorieService = get(), mealRepository = get()) }
 
     viewModel { PlanOverviewViewModel() }
 

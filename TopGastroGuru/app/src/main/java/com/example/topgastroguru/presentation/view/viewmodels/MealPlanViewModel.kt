@@ -2,18 +2,24 @@ package com.example.topgastroguru.presentation.view.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.topgastroguru.data.models.MealDto
+import com.example.topgastroguru.data.models.MealSimple
 import com.example.topgastroguru.data.repositories.MealRepository
+import com.example.topgastroguru.data.sources.remote.CalorieService
 import com.example.topgastroguru.data.sources.remote.converters.MealDtoConverter
 import com.example.topgastroguru.presentation.contract.MealPlanContract
 import com.example.topgastroguru.presentation.view.states.MealsState
 import com.example.topgastroguru.util.MealType
+import com.example.topgastroguru.util.Util
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
+import java.util.concurrent.locks.ReentrantLock
 
 class MealPlanViewModel(
+    private val calorieService: CalorieService,
     private val mealRepository: MealRepository,
 ): ViewModel(), MealPlanContract.ViewModel {
 
@@ -95,6 +101,7 @@ class MealPlanViewModel(
                     is MealsState.Success -> {
                         Timber.e("acac fetched " + it.meals.size)
                         allMeals.value = MealsState.Success(it.meals)
+                        fetchCalories()
                         applyFilters()
                     }
 
@@ -126,7 +133,7 @@ class MealPlanViewModel(
                 return
             }
             val filteredMeals = meals.filter { meal ->
-                meal.name.startsWith(queryString.value!!, true)
+                meal.name.startsWith(queryString.value!!, true) /*&& meal.calValue != "Not available"*/
             }
             allMealsFiltered.value = MealsState.Success(filteredMeals)
             Timber.e("acac apply filters online ok" + filteredMeals.size)
@@ -179,5 +186,98 @@ class MealPlanViewModel(
         subscriptions.add(subscription)
     }
 
+    fun incrementSharedInt(index: Int) {
+        try {
+            synchronized(sharedInt) {
+                // Perform modifications to mutableList
+                sharedInt[index]++
 
+            }
+            // Critical section
+//            sharedInt[index]++
+        } finally {
+
+        }
+    }
+
+    // Shared variable
+    var sharedInt: MutableList<Int> = mutableListOf()
+    var globalLock = ReentrantLock()
+    var mealGain = 0
+    private fun fetchCalories() {
+        if (!(allMeals.value is MealsState.Success))
+            return
+        Timber.e("Usao u fetchCalories")
+        var fetchedList: MutableList<MealDto> = mutableListOf()
+
+
+        sharedInt = MutableList((allMeals.value as MealsState.Success).meals.size) { 0 }
+
+        for ((index, meal) in (allMeals.value as MealsState.Success).meals.orEmpty().withIndex()) {
+            // Shared variable
+            Timber.e("Meal number of ingredients: ${meal.ingredients.size}")
+            for ((key, value) in meal.ingredients) {
+
+                incrementSharedInt(index)
+
+                if (key == null || value == null) {
+                    break
+                }
+//                Timber.e("Map iteration: Ingredient: $key, Measure: $value")
+                val vFetch = Util.formatNameToSnakeLowerCase(value)
+                val kFetch = Util.formatNameToSnakeLowerCase(key)
+                val subscription = calorieService
+                    .getNutritionContent("$vFetch $kFetch")
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                        {
+//                            Timber.e(""+it.toString())
+                            var total = 0.0
+                            for (food in it) {
+                                total += food.calories
+                            }
+                            Timber.e("Total: $total")
+                            Timber.e("Ingredient number: $sharedInt")
+                            meal.calValue += total
+                            Timber.e("acac ok ing")
+
+                            // only when it is the last ingredient
+//                            lock.get(index).lock()
+                            Timber.e("meal.ingredients.size: ${meal.ingredients.size} + sharedInt: ${sharedInt[index]}")
+                            if (meal.ingredients.size == sharedInt[index]) {
+                                Timber.e("DODAO SASTOJAK")
+                                globalLock.lock()
+                                fetchedList.remove(meal)
+                                fetchedList.add(meal)
+                                Timber.e("acac gain $mealGain " + fetchedList.size.toString())
+                                mealGain++
+                                globalLock.unlock()
+                            }
+                            globalLock.lock()
+                            if (mealGain > 5) {
+                                mealGain = 0
+                                globalLock.unlock()
+                                allMeals.value = MealsState.Success(fetchedList)
+                                applyFilters()
+                            } else {
+                                globalLock.unlock()
+                            }
+                            if ((allMeals.value as? MealsState.Success) != null &&
+                                fetchedList.size == (allMeals.value as MealsState.Success).meals.size
+                            ) {
+                                Timber.e("UPDEJTOVAO JE LISTU")
+                                allMeals.value = MealsState.Success(fetchedList)
+                                applyFilters()
+                            }
+//                            lock.get(index).unlock()
+                        },
+                        {
+                            Timber.e(it)
+                        }
+                    )
+                subscriptions.add(subscription)
+            }
+        }
+    }
 }

@@ -11,7 +11,8 @@ class MealDto (
     val category: String,
     val date: Date,
     val type:String,
-    val calValue: String
+    var calValue: Double,
+    val ingredients: HashMap<String, String>
 ) {
 
 }

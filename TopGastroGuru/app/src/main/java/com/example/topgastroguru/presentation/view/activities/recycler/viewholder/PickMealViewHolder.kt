@@ -11,7 +11,11 @@ class PickMealViewHolder(private val itemBinding: LayoutItemPickMealBinding) : R
 
     fun bind(meal: MealDto) {
         itemBinding.titleTv.text = meal.name
-        itemBinding.caloriesTv.text = meal.calValue
+        if(meal.calValue == -1.0) {
+            itemBinding.caloriesTv.text = "Not available"
+        }
+        else
+            itemBinding.caloriesTv.text = meal.calValue.toString()
 //        Timber.e("link do slike:" + meal.link)
 
         if(meal.img!!.contains("storage")) {
