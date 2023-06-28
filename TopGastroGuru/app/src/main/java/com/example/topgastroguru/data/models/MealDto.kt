@@ -10,7 +10,7 @@ class MealDto (
     val link:String,
     val category: String,
     val date: Date,
-    val type:String
+    val type:String,
 ) {
 
 }

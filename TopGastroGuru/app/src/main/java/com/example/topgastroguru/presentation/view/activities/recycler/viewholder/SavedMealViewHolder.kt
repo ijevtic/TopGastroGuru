@@ -11,6 +11,7 @@ class SavedMealViewHolder(private val itemBinding: LayoutItemSavedMealBinding) :
 
     fun bind(meal: MealDto) {
         itemBinding.titleTv.text = meal.name
+//        itemBinding.caloriesTv.text = meal .toString()
 //        Timber.e("link do slike:" + meal.link)
 
         if(meal.img!!.contains("storage")) {

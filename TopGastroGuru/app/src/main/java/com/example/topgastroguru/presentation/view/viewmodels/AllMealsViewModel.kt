@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
+import java.util.concurrent.locks.ReentrantLock
 
 class AllMealsViewModel(
     private val calorieService: CalorieService,
@@ -106,9 +107,6 @@ class AllMealsViewModel(
         Timber.e("Broj poziva: $cnt")
     }
 
-    // Create a ReentrantLock
-    var lock: MutableList<ReentrantLock> = mutableListOf(ReentrantLock(),ReentrantLock(),ReentrantLock(),ReentrantLock(),ReentrantLock(),ReentrantLock(),ReentrantLock(),ReentrantLock(),ReentrantLock(),ReentrantLock(),ReentrantLock(),ReentrantLock(),ReentrantLock(),ReentrantLock(),ReentrantLock(),ReentrantLock(),ReentrantLock(),ReentrantLock(),ReentrantLock(),ReentrantLock(),)
-
     // Perform synchronized access on sharedInt
     fun incrementSharedInt(index: Int) {
         try {
@@ -131,7 +129,6 @@ class AllMealsViewModel(
         var fetchedList: MutableList<MealSimple> = mutableListOf()
 
         sharedInt = MutableList(fullMealsState.value!!.size) { 0 }
-        lock= MutableList(fullMealsState.value!!.size) { ReentrantLock() }
 
         for ((index, meal)  in fullMealsState.value.orEmpty().withIndex()) {
             // Shared variable
